@@ -1,18 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:background="#1A1B22"
+    android:paddingStart="@dimen/padding_16dp"
+    android:paddingEnd="@dimen/padding_16dp"
+    android:paddingBottom="28dp"
+    android:backgroundTint="#3772E7"
+    >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/playlist_maker"
+        android:textColor="#ffffff"
+        android:textSize="22sp"
+        android:paddingTop="14dp"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        />
+
+    <Button
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:text="@string/search"
+        android:textAllCaps="false"
+        android:textColor="@color/black_from_homework"
+        android:textSize="@dimen/textInButtonAndInTitleSize"
+        app:cornerRadius="@dimen/corner_radius_button_on_main"
+        app:icon="@drawable/search"
+        app:iconGravity="textStart"
+        app:iconPadding="@dimen/iconPadding"
+        app:iconSize="@dimen/iconsize"
+        app:iconTint="@color/black_from_homework" />
+
+
+    <Button
+        android:id="@+id/libraryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_top_between_button"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:text="@string/medialibrary"
+        android:textAllCaps="false"
+        android:textColor="@color/black_from_homework"
+        android:textSize="@dimen/textInButtonAndInTitleSize"
+        app:cornerRadius="@dimen/corner_radius_button_on_main"
+        app:icon="@drawable/library"
+        app:iconGravity="textStart"
+        app:iconPadding="@dimen/iconPadding"
+        app:iconSize="@dimen/iconsize"
+        app:iconTint="@color/black_from_homework" />
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_top_between_button"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:text="@string/settings"
+        android:textAllCaps="false"
+        android:textColor="@color/black_from_homework"
+        android:textSize="@dimen/textInButtonAndInTitleSize"
+        app:cornerRadius="@dimen/corner_radius_button_on_main"
+        app:icon="@drawable/settings"
+        app:iconGravity="textStart"
+        app:iconPadding="@dimen/iconPadding"
+        app:iconSize="@dimen/iconsize"
+        app:iconTint="@color/black_from_homework" />
+
+</LinearLayout>
