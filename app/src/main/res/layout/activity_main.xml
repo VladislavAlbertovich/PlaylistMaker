@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1A1B22"
+    android:background="@color/black_from_homework"
     android:paddingStart="@dimen/padding_16dp"
     android:paddingEnd="@dimen/padding_16dp"
     android:paddingBottom="28dp"
@@ -22,7 +22,7 @@
         />
 
     <Button
-        android:id="@+id/search"
+        android:id="@+id/buttonSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -41,7 +41,7 @@
 
 
     <Button
-        android:id="@+id/libraryButton"
+        android:id="@+id/buttonLibrary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_button"
@@ -59,7 +59,7 @@
         app:iconTint="@color/black_from_homework" />
 
     <Button
-        android:id="@+id/settingsButton"
+        android:id="@+id/buttonSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_button"
