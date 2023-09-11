@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="@string/settings"
             android:textSize="@dimen/textInButtonAndInTitleSize"
-            android:textColor="@color/black_from_homework"
+            android:textColor="@color/yp_black"
             android:textStyle="bold"
             android:paddingStart="24dp"
             tools:ignore="RtlSymmetry" />
@@ -128,8 +128,4 @@
             android:src="@drawable/arrow_forward" />
 
     </LinearLayout>
-
-
-
-
 </LinearLayout>
