@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Base.Theme.PlaylistMarket"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/black_from_homework"
     android:paddingStart="@dimen/padding_16dp"
     android:paddingEnd="@dimen/padding_16dp"
     android:paddingBottom="28dp"
-    android:backgroundTint="#3772E7"
+    android:background="?attr/colorPrimary"
+
     >
 
     <TextView
@@ -21,24 +22,17 @@
 
         />
 
+
     <Button
         android:id="@+id/buttonSearch"
+        style="@style/ButtonOnMainActivityStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_weight="1"
-        android:backgroundTint="@color/white"
         android:text="@string/search"
-        android:textAllCaps="false"
-        android:textColor="@color/black_from_homework"
-        android:textSize="@dimen/textInButtonAndInTitleSize"
-        app:cornerRadius="@dimen/corner_radius_button_on_main"
-        app:icon="@drawable/search"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/iconPadding"
-        app:iconSize="@dimen/iconsize"
-        app:iconTint="@color/black_from_homework" />
-
+        android:typeface="normal"
+        app:icon="@drawable/search" />
 
     <Button
         android:id="@+id/buttonLibrary"
@@ -46,17 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_button"
         android:layout_weight="1"
-        android:backgroundTint="@color/white"
         android:text="@string/medialibrary"
-        android:textAllCaps="false"
-        android:textColor="@color/black_from_homework"
-        android:textSize="@dimen/textInButtonAndInTitleSize"
-        app:cornerRadius="@dimen/corner_radius_button_on_main"
         app:icon="@drawable/library"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/iconPadding"
-        app:iconSize="@dimen/iconsize"
-        app:iconTint="@color/black_from_homework" />
+        style="@style/ButtonOnMainActivityStyle" />
 
     <Button
         android:id="@+id/buttonSettings"
@@ -64,16 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_button"
         android:layout_weight="1"
-        android:backgroundTint="@color/white"
         android:text="@string/settings"
-        android:textAllCaps="false"
-        android:textColor="@color/black_from_homework"
-        android:textSize="@dimen/textInButtonAndInTitleSize"
-        app:cornerRadius="@dimen/corner_radius_button_on_main"
         app:icon="@drawable/settings"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/iconPadding"
-        app:iconSize="@dimen/iconsize"
-        app:iconTint="@color/black_from_homework" />
+        style="@style/ButtonOnMainActivityStyle" />
 
 </LinearLayout>

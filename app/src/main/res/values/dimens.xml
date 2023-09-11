@@ -5,7 +5,7 @@
     <dimen name="textInButtonAndInTitleSize">22sp</dimen>
     <dimen name="padding_16dp">16dp</dimen>
     <dimen name="margin_top_between_button">16dp</dimen>
-    <dimen name="iconsize">24dp</dimen>
+    <dimen name="iconSize">24dp</dimen>
     <dimen name="iconPadding">8dp</dimen>
     <dimen name="corner_radius_button_on_main">16dp</dimen>
     <dimen name="size_text_in_settings_menu">16sp</dimen>

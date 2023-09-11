@@ -3,5 +3,14 @@
     <style name="Base.Theme.PlaylistMarket" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/yp_black</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSecondary">@color/yp_black</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorButtonNormal">@color/white</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="fontFamily">@font/ys_display_light</item>
     </style>
 </resources>

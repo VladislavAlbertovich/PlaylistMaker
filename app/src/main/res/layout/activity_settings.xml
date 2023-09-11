@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingStart="@dimen/padding_16dp"
     android:paddingEnd="12dp"
-    android:background="@color/white"
+    android:background="@color/settings_background_color"
 
     >
 
@@ -17,20 +18,20 @@
 
         <ImageButton
             android:id="@+id/backImageButton"
-            android:layout_width="@dimen/iconsize"
-            android:layout_height="@dimen/iconsize"
+            android:layout_width="@dimen/iconSize"
+            android:layout_height="@dimen/iconSize"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:backgroundTintMode="screen"
+            android:backgroundTint="@color/settings_background_color"
             android:src="@drawable/arrowback"
-            />
+            app:tint="@color/text_day_night_color" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings"
             android:textSize="@dimen/textInButtonAndInTitleSize"
-            android:textColor="@color/black_from_homework"
+            android:textColor="@color/text_day_night_color"
             android:textStyle="bold"
             android:paddingStart="24dp"
             tools:ignore="RtlSymmetry" />
@@ -47,15 +48,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/Black_theme"
-            android:textSize="@dimen/size_text_in_settings_menu"
-            android:textColor="@color/black"
             android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
+            style="@style/TextOnSettingsActivityStyle"/>
 
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:thumbTint="@color/switch_day_night_color"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     </LinearLayout>
@@ -69,16 +68,13 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="@string/share_app"
-            android:textColor="@color/black"
-            android:textSize="@dimen/size_text_in_settings_menu" />
+            style="@style/TextOnSettingsActivityStyle"/>
 
         <ImageButton
-            android:layout_width="@dimen/iconsize"
-            android:layout_height="@dimen/iconsize"
-            android:backgroundTintMode="screen"
+            style="@style/IconsOnSettingActivityStyle"
+
             android:src="@drawable/share" />
 
     </LinearLayout>
@@ -92,17 +88,15 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="@string/write_to_support"
-            android:textColor="@color/black"
-            android:textSize="@dimen/size_text_in_settings_menu" />
+            style="@style/TextOnSettingsActivityStyle"
+             />
 
         <ImageButton
-            android:layout_width="@dimen/iconsize"
-            android:layout_height="@dimen/iconsize"
-            android:backgroundTintMode="screen"
-            android:src="@drawable/support" />
+            style="@style/IconsOnSettingActivityStyle"
+            android:src="@drawable/support"
+            />
 
     </LinearLayout>
 
@@ -115,16 +109,12 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="@string/user_agreement"
-            android:textColor="@color/black"
-            android:textSize="@dimen/size_text_in_settings_menu" />
+            style="@style/TextOnSettingsActivityStyle" />
 
         <ImageButton
-            android:layout_width="@dimen/iconsize"
-            android:layout_height="@dimen/iconsize"
-            android:backgroundTintMode="screen"
+            style="@style/IconsOnSettingActivityStyle"
             android:src="@drawable/arrow_forward" />
 
     </LinearLayout>
