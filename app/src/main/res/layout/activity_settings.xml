@@ -17,7 +17,7 @@
         android:paddingTop="14dp">
 
         <ImageButton
-            android:id="@+id/backImageButton"
+            android:id="@+id/buttonBack"
             android:layout_width="@dimen/iconSize"
             android:layout_height="@dimen/iconSize"
             android:layout_gravity="center"
@@ -30,10 +30,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings"
-            android:textSize="@dimen/textInButtonAndInTitleSize"
             android:textColor="@color/text_day_night_color"
-            android:textStyle="bold"
             android:paddingStart="24dp"
+            style="@style/TitleStyle"
             tools:ignore="RtlSymmetry" />
 
     </LinearLayout>
@@ -63,7 +62,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_text_in_settings"
-        android:gravity="end">
+        android:gravity="end"
+        android:id="@+id/buttonShareApp">
 
         <TextView
             android:layout_width="0dp"
@@ -74,7 +74,7 @@
 
         <ImageButton
             style="@style/IconsOnSettingActivityStyle"
-
+            android:id="@+id/buttonShareAppIcon"
             android:src="@drawable/share" />
 
     </LinearLayout>
@@ -83,7 +83,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_text_in_settings"
-        android:gravity="end">
+        android:gravity="end"
+        android:id="@+id/buttonSupport">
 
         <TextView
             android:layout_width="0dp"
@@ -104,7 +105,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_text_in_settings"
-        android:gravity="end">
+        android:gravity="end"
+        android:id="@+id/buttonUserAgreement">
 
         <TextView
             android:layout_width="0dp"

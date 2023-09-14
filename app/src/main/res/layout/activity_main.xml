@@ -16,23 +16,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/playlist_maker"
-        android:textColor="#ffffff"
-        android:textSize="22sp"
         android:paddingTop="14dp"
+        style="@style/TitleStyle"
 
         />
 
 
     <Button
         android:id="@+id/buttonSearch"
-        style="@style/ButtonOnMainActivityStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_weight="1"
         android:text="@string/search"
-        android:typeface="normal"
-        app:icon="@drawable/search" />
+        app:icon="@drawable/search"
+        style="@style/ButtonOnMainActivityStyle" />
 
     <Button
         android:id="@+id/buttonLibrary"
@@ -42,7 +40,7 @@
         android:layout_weight="1"
         android:text="@string/medialibrary"
         app:icon="@drawable/library"
-        style="@style/ButtonOnMainActivityStyle" />
+        style="@style/ButtonOnMainActivityStyle"/>
 
     <Button
         android:id="@+id/buttonSettings"
@@ -52,6 +50,6 @@
         android:layout_weight="1"
         android:text="@string/settings"
         app:icon="@drawable/settings"
-        style="@style/ButtonOnMainActivityStyle" />
+        style="@style/ButtonOnMainActivityStyle"/>
 
 </LinearLayout>
