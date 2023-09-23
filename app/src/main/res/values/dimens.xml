@@ -11,4 +11,11 @@
     <dimen name="size_text_in_settings_menu">16sp</dimen>
     <dimen name="margin_top_between_text_in_settings">42dp</dimen>
     <dimen name="title_text_size">22sp</dimen>
+    <dimen name="padding_14dp">14dp</dimen>
+    <dimen name="_0dp">0dp</dimen>
+    <dimen name="_4dp">4dp</dimen>
+    <dimen name="_12dp">12dp</dimen>
+    <dimen name="_36dp">36dp</dimen>
+    <dimen name="search_bar_height">36dp</dimen>
+    <dimen name="_50dp">50dp</dimen>
 </resources>
