@@ -54,15 +54,17 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    companion object{
+        const val USER_INPUT = "USER_INPUT"
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("USER_INPUT",inputSearchEditText.text.toString())
-
+        outState.putString(USER_INPUT,inputSearchEditText.text.toString())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        inputSearchEditText.setText(savedInstanceState.getString("USER_INPUT"))
+        inputSearchEditText.setText(savedInstanceState.getString(USER_INPUT))
     }
-
 }
