@@ -1,6 +1,7 @@
 package com.example.playlistmarket
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,8 +11,6 @@ import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.switchmaterial.SwitchMaterial
-import java.lang.IllegalStateException
 
 class SettingsActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
@@ -22,7 +21,7 @@ class SettingsActivity : AppCompatActivity() {
         val buttonShareApp = findViewById<LinearLayout>(R.id.buttonShareApp)
         val buttonSupport = findViewById<LinearLayout>(R.id.buttonSupport)
         val buttonUserAgreement = findViewById<LinearLayout>(R.id.buttonUserAgreement)
-        val switchDayNight = findViewById<SwitchMaterial>(R.id.switcherDayNight)
+        val switchDayNight = findViewById<Switch>(R.id.switcherDayNight)
 
         buttonBack.setOnClickListener {
             finish()
@@ -36,7 +35,7 @@ class SettingsActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_TEXT, shareText)
                 type = "text/plain"
             }
-            startActivity(sendIntent)
+            startActivitySafe(sendIntent)
         }
 
         buttonSupport.setOnClickListener {
@@ -49,19 +48,13 @@ class SettingsActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_SUBJECT, subjectMessage)
                 putExtra(Intent.EXTRA_TEXT, textMessage)
             }
-            try {
-                startActivity(supportIntent)
-            } catch (e: Exception){
-                val errorMessage = getString(R.string.error_message_email)
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-                throw IllegalStateException(errorMessage)
-            }
+            startActivitySafe(supportIntent)
         }
 
         buttonUserAgreement.setOnClickListener {
             val url = Uri.parse(getString(R.string.link_to_user_agreement))
             val userAgreementIntent = Intent(Intent.ACTION_VIEW, url)
-            startActivity(userAgreementIntent)
+            startActivitySafe(userAgreementIntent)
         }
 
         switchDayNight.setOnCheckedChangeListener { _, isChecked ->
@@ -70,6 +63,15 @@ class SettingsActivity : AppCompatActivity() {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+        }
+    }
+
+    private fun startActivitySafe(intent: Intent){
+        try {
+            startActivity(intent)
+        } catch (exception: ActivityNotFoundException){
+            val errorMessage = getString(R.string.error_app_message)
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -50,7 +50,7 @@
             android:layout_weight="1"
             style="@style/TextOnSettingsActivityStyle"/>
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
+        <Switch
             android:id="@+id/switcherDayNight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

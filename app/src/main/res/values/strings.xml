@@ -14,5 +14,5 @@
     <string name="thank_message_to_developers">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="my_email">gudsanta66@gmail.com</string>
     <string name="link_to_user_agreement">https://yandex.ru/legal/practicum_offer/</string>
-    <string name="error_message_email">Нет подходящего приложения на устройстве</string>
+    <string name="error_app_message">Нет подходящего приложения на устройстве</string>
 </resources>
