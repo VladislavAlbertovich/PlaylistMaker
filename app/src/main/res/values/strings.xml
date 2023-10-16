@@ -15,4 +15,7 @@
     <string name="my_email">gudsanta66@gmail.com</string>
     <string name="link_to_user_agreement">https://yandex.ru/legal/practicum_offer/</string>
     <string name="error_app_message">Нет подходящего приложения на устройстве</string>
+    <string name="track_artist">Исполнитель</string>
+    <string name="track_time">0:00</string>
+    <string name="track_name">Название песни</string>
 </resources>

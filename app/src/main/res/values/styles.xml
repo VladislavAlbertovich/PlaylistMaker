@@ -46,4 +46,10 @@
         <item name="android:trackTint">@color/yp_light_gray</item>
     </style>
 
+    <style name="ArtistNameOnTrackCardTextStyle">
+        <item name="android:textColor">@color/yp_text_gray</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+
 </resources>

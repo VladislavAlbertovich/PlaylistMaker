@@ -10,4 +10,6 @@
     <color name="switch_day_night_color">@color/yp_blue</color>
     <color name="text_and_icon_on_search_layout_color">@color/yp_black</color>
     <color name="search_background">@color/white</color>
+    <color name="icon_color_day_night">@color/white</color>
+    <color name="cardview_color">@color/yp_black</color>
 </resources>

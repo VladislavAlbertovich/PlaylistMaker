@@ -29,4 +29,9 @@
         <item name="android:thumbTint">@color/yp_blue</item>
         <item name="android:trackTint">@color/yp_blue_light</item>
     </style>
+
+    <style name="ArtistNameOnTrackCardTextStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">11sp</item>
+    </style>
 </resources>
