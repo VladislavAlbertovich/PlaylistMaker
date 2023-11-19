@@ -8,7 +8,6 @@
     android:paddingStart="@dimen/padding_16dp"
     android:paddingEnd="12dp"
     android:background="@color/settings_search_background_color"
-
     >
 
     <LinearLayout
@@ -50,12 +49,12 @@
             android:layout_weight="1"
             style="@style/TextOnSettingsActivityStyle"/>
 
-        <Switch
-            android:id="@+id/switcherDayNight"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/themeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/SwitcherStyle"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+            />
 
     </LinearLayout>
 
@@ -121,8 +120,4 @@
             android:src="@drawable/arrow_forward" />
 
     </LinearLayout>
-
-
-
-
 </LinearLayout>

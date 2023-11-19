@@ -146,6 +146,45 @@
         style="@style/UpdateButtonStyle"
         android:visibility="gone"/>
 
+    <LinearLayout
+        android:id="@+id/search_history_viewgroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/padding_13dp"
+        android:layout_marginTop="@dimen/_50dp"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/you_finded_text"
+            android:gravity="center"
+            android:textSize="@dimen/_19sp"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/history_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/_20dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
+
+        <Button
+            android:id="@+id/clear_history_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_32dp"
+            android:text="@string/clear_history_text"
+            style="@style/ActivitySearchButtonStyle"/>
+
+
+    </LinearLayout>
+
 
 </LinearLayout>
 

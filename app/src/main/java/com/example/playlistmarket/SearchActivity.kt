@@ -1,6 +1,8 @@
 package com.example.playlistmarket
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
@@ -28,6 +31,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeHolderImage: ImageView
     private lateinit var updateButton: Button
     private lateinit var recyclerView: RecyclerView
+    private lateinit var historyRecyclerView: RecyclerView
+    private lateinit var searchHistoryViewGroup: LinearLayout
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var trackAdapter: TrackAdapter
+    private lateinit var historyTrackAdapter: TrackAdapter
 
     private val retrofit =
         Retrofit.Builder()
@@ -37,11 +46,9 @@ class SearchActivity : AppCompatActivity() {
 
     private val iTunesSearchService = retrofit.create(ITunesSearchApi::class.java)
     private var tracks = ArrayList<Track>()
-    private val trackAdapter = TrackAdapter(tracks)
     private var lastTrackRequest = ""
 
-
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -52,11 +59,41 @@ class SearchActivity : AppCompatActivity() {
         placeHolderImage = findViewById<ImageView>(R.id.placeholder_image)
         updateButton = findViewById<Button>(R.id.update_button)
         recyclerView = findViewById<RecyclerView>(R.id.trackListRecyclerView)
-
-        val clearButton: ImageView = findViewById<ImageView>(R.id.clearButtonImageView)
+        searchHistoryViewGroup = findViewById<LinearLayout>(R.id.search_history_viewgroup)
+        historyRecyclerView = findViewById<RecyclerView>(R.id.history_recycler_view)
+        val clearButton = findViewById<ImageView>(R.id.clearButtonImageView)
         val buttonBack = findViewById<ImageView>(R.id.buttonBack)
+        val clearHistoryButton = findViewById<Button>(R.id.clear_history_button)
+        val historyTracks = ArrayList<Track>()
+        sharedPreferences =
+            getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE)
+
+        val listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == TRACKS_KEY) {
+                val jsonTracks = sharedPreferences.getString(TRACKS_KEY, null)
+                if (jsonTracks != null) {
+                    tracks = searchHistory.createTracksFromJson(jsonTracks)
+                    historyTrackAdapter = TrackAdapter(tracks) {}
+                    historyTrackAdapter.notifyDataSetChanged()
+                } else {
+                    historyTrackAdapter = TrackAdapter(ArrayList<Track>()) {}
+                    historyTrackAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+
+        searchHistory = SearchHistory(sharedPreferences)
+
+        historyTrackAdapter = TrackAdapter(searchHistory.getTracksFromSharedPreferences()) {}
+        trackAdapter = TrackAdapter(tracks) {
+            searchHistory.addTrackToSearchHistory(it)
+            historyTrackAdapter.notifyDataSetChanged()
+        }
 
         recyclerView.adapter = trackAdapter
+        historyRecyclerView.adapter = historyTrackAdapter
 
         buttonBack.setOnClickListener {
             finish()
@@ -67,6 +104,15 @@ class SearchActivity : AppCompatActivity() {
             tracks.clear()
             trackAdapter.notifyDataSetChanged()
             hideKeyboard()
+            if (sharedPreferences.getString(TRACKS_KEY, null) != null){
+                searchHistoryViewGroup.visibility = View.VISIBLE
+            }
+        }
+
+        clearHistoryButton.setOnClickListener {
+            searchHistoryViewGroup.visibility = View.GONE
+            searchHistory.clearSharedPreferences()
+            trackAdapter.notifyDataSetChanged()
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -74,6 +120,8 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchHistoryViewGroup.visibility =
+                    if (searchHistoryViewGroup.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -96,6 +144,13 @@ class SearchActivity : AppCompatActivity() {
             search(lastTrackRequest)
             if (lastTrackRequest.isNotEmpty()) {
                 clearButton.visibility = View.VISIBLE
+            }
+        }
+        inputSearchEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && inputSearchEditText.text.isNullOrEmpty() && searchHistory.getTracksFromSharedPreferences().size > 0){
+                searchHistoryViewGroup.visibility = View.VISIBLE
+            } else {
+                searchHistoryViewGroup.visibility = View.GONE
             }
         }
     }
@@ -189,3 +244,4 @@ class SearchActivity : AppCompatActivity() {
         inputSearchEditText.setText(savedInstanceState.getString(USER_INPUT))
     }
 }
+
