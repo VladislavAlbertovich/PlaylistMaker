@@ -35,7 +35,8 @@
             android:textColor="@color/text_day_night_color"
             android:paddingStart="24dp"
             style="@style/TitleStyle"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"
+            />
 
     </LinearLayout>
 
@@ -62,6 +63,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/searchInputEditText"
             style="@style/EditTextOnSearchLayoutStyle"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:layout_marginStart="@dimen/_36dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -90,11 +93,59 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trackListRecyclerView"
-        android:layout_marginStart="@dimen/padding_13dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_13dp"
         android:layout_marginTop="@dimen/_24dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <ImageView
+        android:id="@+id/placeholder_image"
+        android:layout_width="@dimen/_120dp"
+        android:layout_height="@dimen/_120dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_110dp"
+        android:visibility="gone"
+        android:src="@drawable/nothing_was_found"/>
+
+    <TextView
+        android:id="@+id/placeholder_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_16dp"
+        android:layout_marginStart="@dimen/padding_13dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="19sp"
+        android:textColor="@color/text_day_night_color"
+        tools:text="@string/nothing_found"
+        android:visibility="gone"
+        />
+    <TextView
+        android:id="@+id/placeholder_additional_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_24dp"
+        android:layout_marginStart="@dimen/padding_13dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:textSize="19sp"
+        android:textColor="@color/text_day_night_color"
+        tools:text ="Загрузка не удалась. Проверьте подключение к интернету"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_24dp"
+        android:layout_marginStart="@dimen/padding_13dp"
+        android:text="@string/update"
+        style="@style/UpdateButtonStyle"
+        android:visibility="gone"/>
+
 
 </LinearLayout>
 
