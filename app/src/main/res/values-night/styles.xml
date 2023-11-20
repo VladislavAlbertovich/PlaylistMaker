@@ -40,4 +40,10 @@
         <item name="backgroundTint">@color/white</item>
         <item name="android:textColor">@color/yp_black</item>
     </style>
+
+    <style name="ActivitySearchButtonStyle">
+        <item name="android:textSize">@dimen/_14sp</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/yp_black</item>
+    </style>
 </resources>
