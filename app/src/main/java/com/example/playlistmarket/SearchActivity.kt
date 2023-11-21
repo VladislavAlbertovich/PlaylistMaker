@@ -67,11 +67,12 @@ class SearchActivity : AppCompatActivity() {
         val buttonBack = findViewById<ImageView>(R.id.buttonBack)
         val clearHistoryButton = findViewById<Button>(R.id.clear_history_button)
 
-        val tracksFromHistory = (searchHistory.getTracksFromSharedPreferences())
-
         sharedPreferences =
             getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
+
+        val tracksFromHistory = (searchHistory.getTracksFromSharedPreferences())
+
         historyTrackAdapter = TrackAdapter() {}
         historyTrackAdapter.updateTracks(tracksFromHistory)
         trackAdapter = TrackAdapter(){
