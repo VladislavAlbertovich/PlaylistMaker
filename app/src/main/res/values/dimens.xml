@@ -29,4 +29,9 @@
     <dimen name="_19sp">19sp</dimen>
     <dimen name="_32dp">32dp</dimen>
     <dimen name="_14sp">14sp</dimen>
+    <dimen name="_82dp">82dp</dimen>
+    <dimen name="_312dp">312dp</dimen>
+    <dimen name="_22sp">22sp</dimen>
+    <dimen name="_54dp">54dp</dimen>
+    <dimen name="_30dp">30dp</dimen>
 </resources>

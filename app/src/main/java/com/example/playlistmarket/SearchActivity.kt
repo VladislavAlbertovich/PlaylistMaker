@@ -2,6 +2,7 @@ package com.example.playlistmarket
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,13 +73,16 @@ class SearchActivity : AppCompatActivity() {
             getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
-        val tracksFromHistory = (searchHistory.getTracksFromSharedPreferences())
+        fun getTracksFromHistory() = searchHistory.getTracksFromSharedPreferences()
 
-        historyTrackAdapter = TrackAdapter() {}
-        historyTrackAdapter.updateTracks(tracksFromHistory)
+        historyTrackAdapter = TrackAdapter() {
+            openPlayerActivity(it)
+        }
+        historyTrackAdapter.updateTracks(getTracksFromHistory())
         trackAdapter = TrackAdapter(){
             searchHistory.addTrackToSearchHistory(it)
-            historyTrackAdapter.updateTracks(tracksFromHistory)
+            historyTrackAdapter.updateTracks(getTracksFromHistory())
+            openPlayerActivity(it)
         }
 
         val listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -98,14 +103,14 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchHistoryViewGroup.visibility =
-                    if (inputSearchEditText.hasFocus() && s?.isEmpty() == true && searchHistory.getTracksFromSharedPreferences().size > 0) View.VISIBLE else View.GONE
+                    if (inputSearchEditText.hasFocus() && s?.isEmpty() == true && getTracksFromHistory().size > 0) View.VISIBLE else View.GONE
             }
 
             override fun afterTextChanged(s: Editable?) {
                 clearButton.visibility = clearButtonVisibility(s)
                 inputText = s
                 searchHistoryViewGroup.visibility =
-                    if (inputSearchEditText.hasFocus() && s?.isEmpty() == true && searchHistory.getTracksFromSharedPreferences().size > 0) View.VISIBLE else View.GONE
+                    if (inputSearchEditText.hasFocus() && s?.isEmpty() == true && getTracksFromHistory().size > 0) View.VISIBLE else View.GONE
             }
         }
 
@@ -136,7 +141,7 @@ class SearchActivity : AppCompatActivity() {
 
         inputSearchEditText.let {
             it.requestFocus()
-            if (it.hasFocus() && searchHistory.getTracksFromSharedPreferences().size > 0) {
+            if (it.hasFocus() && getTracksFromHistory().size > 0) {
                 searchHistoryViewGroup.visibility = View.VISIBLE
             }
             it.postDelayed(object : Runnable {
@@ -157,7 +162,7 @@ class SearchActivity : AppCompatActivity() {
             }
             it.setOnFocusChangeListener { _, hasFocus ->
                 searchHistoryViewGroup.visibility =
-                    if (hasFocus && it.text.isNullOrEmpty() && searchHistory.getTracksFromSharedPreferences().size > 0) View.VISIBLE else View.GONE
+                    if (hasFocus && it.text.isNullOrEmpty() && getTracksFromHistory().size > 0) View.VISIBLE else View.GONE
             }
         }
 
@@ -167,6 +172,7 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility = View.VISIBLE
             }
         }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -177,6 +183,12 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         inputSearchEditText.setText(savedInstanceState.getString(USER_INPUT))
+    }
+
+    private fun openPlayerActivity(track: Track){
+        val intentPlayerActivity = Intent(this, PlayerActivity::class.java)
+        intentPlayerActivity.putExtra(TRACK, Gson().toJson(track))
+        startActivity(intentPlayerActivity)
     }
 
     private fun search(trackOrArtistName: String) {
@@ -253,6 +265,7 @@ class SearchActivity : AppCompatActivity() {
     }
     companion object {
         const val USER_INPUT = "USER_INPUT"
+        const val TRACK = "TRACK"
     }
 }
 
