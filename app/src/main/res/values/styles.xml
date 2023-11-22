@@ -42,16 +42,16 @@
     </style>
 
     <style name="SwitcherStyle">
-        <item name="android:thumbTint">@color/yp_text_gray</item>
-        <item name="android:trackTint">@color/yp_light_gray</item>
+        <item name="thumbTint">@color/yp_text_gray</item>
+        <item name="trackTint">@color/yp_light_gray</item>
     </style>
 
     <style name="ArtistNameOnTrackCardTextStyle">
         <item name="android:textColor">@color/yp_text_gray</item>
         <item name="android:textSize">11sp</item>
     </style>
-    <style name="UpdateButtonStyle">
-        <item name="android:textSize">14sp</item>
+    <style name="ActivitySearchButtonStyle">
+        <item name="android:textSize">@dimen/_14sp</item>
         <item name="android:backgroundTint">@color/yp_black</item>
         <item name="android:textColor">@color/white</item>
     </style>

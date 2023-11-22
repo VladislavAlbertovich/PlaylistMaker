@@ -6,17 +6,13 @@
     android:layout_height="match_parent"
     android:background="@color/settings_search_background_color"
     android:orientation="vertical"
-
     android:paddingEnd="16dp">
 
-
-
     <LinearLayout
-        android:layout_marginStart="@dimen/padding_16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="14dp"
-        >
+        android:layout_marginStart="@dimen/padding_16dp"
+        android:paddingTop="14dp">
 
         <ImageButton
             android:id="@+id/buttonBack"
@@ -29,65 +25,59 @@
             app:tint="@color/text_day_night_color" />
 
         <TextView
+            style="@style/TitleStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="24dp"
             android:text="@string/search"
             android:textColor="@color/text_day_night_color"
-            android:paddingStart="24dp"
-            style="@style/TitleStyle"
-            tools:ignore="RtlSymmetry"
-            />
+            tools:ignore="RtlSymmetry" />
 
     </LinearLayout>
-
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/search_bar_height"
-        android:orientation="horizontal"
+        android:layout_marginStart="@dimen/padding_16dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/layout_bg"
         android:backgroundTint="@color/search_background"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="@dimen/padding_16dp"
-
-        >
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/_12dp"
             android:layout_gravity="center_vertical"
+            android:paddingStart="@dimen/_12dp"
             android:src="@drawable/search"
             app:tint="@color/text_and_icon_on_search_layout_color" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/searchInputEditText"
             style="@style/EditTextOnSearchLayoutStyle"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
-            android:layout_marginStart="@dimen/_36dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_36dp"
+            android:layout_marginEnd="@dimen/_50dp"
             android:cursorVisible="true"
             android:hint="@string/search"
-            android:layout_marginEnd="@dimen/_50dp"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:textColorHighlight="@color/yp_blue"
             android:textCursorDrawable="@drawable/cursor_color"
-            tools:ignore="RtlSymmetry"
-            />
+            tools:ignore="RtlSymmetry"></com.google.android.material.textfield.TextInputEditText>
 
         <ImageView
             android:id="@+id/clearButtonImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:src="@drawable/cancel"
-            android:baselineAlignBottom="true"
             android:layout_marginEnd="8dp"
-            app:tint="@color/text_and_icon_on_search_layout_color"
+            android:baselineAlignBottom="true"
+            android:src="@drawable/cancel"
             android:visibility="invisible"
-            />
+            app:tint="@color/text_and_icon_on_search_layout_color" />
 
     </FrameLayout>
 
@@ -106,47 +96,79 @@
         android:layout_height="@dimen/_120dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_110dp"
-        android:visibility="gone"
-        android:src="@drawable/nothing_was_found"/>
+        android:src="@drawable/nothing_was_found"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/placeholder_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_16dp"
-        android:layout_marginStart="@dimen/padding_13dp"
         android:layout_gravity="center_horizontal"
-        android:textSize="19sp"
+        android:layout_marginStart="@dimen/padding_13dp"
+        android:layout_marginTop="@dimen/padding_16dp"
         android:textColor="@color/text_day_night_color"
-        tools:text="@string/nothing_found"
+        android:textSize="19sp"
         android:visibility="gone"
-        />
+        tools:text="@string/nothing_found" />
+
     <TextView
         android:id="@+id/placeholder_additional_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_24dp"
-        android:layout_marginStart="@dimen/padding_13dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginStart="@dimen/padding_13dp"
+        android:layout_marginTop="@dimen/_24dp"
         android:gravity="center_horizontal"
-        android:textSize="19sp"
         android:textColor="@color/text_day_night_color"
-        tools:text ="Загрузка не удалась. Проверьте подключение к интернету"
+        android:textSize="19sp"
         android:visibility="gone"
-        />
+        tools:text="Загрузка не удалась. Проверьте подключение к интернету" />
 
     <Button
         android:id="@+id/update_button"
+        style="@style/UpdateButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/_24dp"
         android:layout_marginStart="@dimen/padding_13dp"
+        android:layout_marginTop="@dimen/_24dp"
         android:text="@string/update"
-        style="@style/UpdateButtonStyle"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
+    <LinearLayout
+        android:id="@+id/search_history_viewgroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_13dp"
+        android:layout_marginTop="@dimen/_50dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/you_finded_text"
+            android:textSize="@dimen/_19sp"
+            android:textColor="@color/text_day_night_color"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/history_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:layout_weight="1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <Button
+            android:id="@+id/clear_history_button"
+            style="@style/ActivitySearchButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_32dp"
+            android:text="@string/clear_history_text" />
+    </LinearLayout>
 </LinearLayout>
 
 

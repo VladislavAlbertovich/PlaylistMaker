@@ -11,8 +11,11 @@ import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.material.switchmaterial.SwitchMaterial
+
 
 class SettingsActivity : AppCompatActivity() {
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +24,8 @@ class SettingsActivity : AppCompatActivity() {
         val buttonShareApp = findViewById<LinearLayout>(R.id.buttonShareApp)
         val buttonSupport = findViewById<LinearLayout>(R.id.buttonSupport)
         val buttonUserAgreement = findViewById<LinearLayout>(R.id.buttonUserAgreement)
-        val switchDayNight = findViewById<Switch>(R.id.switcherDayNight)
+        val themeSwitch = findViewById<SwitchMaterial>(R.id.themeSwitch)
+        val sharedPrefence = getSharedPreferences(THEME_SHARED_PREFERENCE, MODE_PRIVATE)
 
         buttonBack.setOnClickListener {
             finish()
@@ -57,13 +61,10 @@ class SettingsActivity : AppCompatActivity() {
             startActivitySafe(userAgreementIntent)
         }
 
-        switchDayNight.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+        themeSwitch.setOnCheckedChangeListener { switcher, isChecked ->
+            (application as App).switchTheme(isChecked)
         }
+        themeSwitch.isChecked = sharedPrefence.getBoolean(THEME_SWITCH_KEY, false)
     }
 
     private fun startActivitySafe(intent: Intent){

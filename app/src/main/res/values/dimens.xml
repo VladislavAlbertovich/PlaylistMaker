@@ -26,4 +26,7 @@
     <dimen name="_2dp">2dp</dimen>
     <dimen name="_120dp">120dp</dimen>
     <dimen name="_110dp">110dp</dimen>
+    <dimen name="_19sp">19sp</dimen>
+    <dimen name="_32dp">32dp</dimen>
+    <dimen name="_14sp">14sp</dimen>
 </resources>
