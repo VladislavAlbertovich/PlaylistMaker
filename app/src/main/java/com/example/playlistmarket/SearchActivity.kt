@@ -44,7 +44,9 @@ class SearchActivity : AppCompatActivity() {
     private val retrofit =
         Retrofit.Builder()
             .baseUrl("https://itunes.apple.com")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(
+                GsonConverterFactory.create()
+            )
             .build()
 
     private val iTunesSearchService = retrofit.create(ITunesSearchApi::class.java)
@@ -73,13 +75,12 @@ class SearchActivity : AppCompatActivity() {
             getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
-        fun getTracksFromHistory() = searchHistory.getTracksFromSharedPreferences()
 
         historyTrackAdapter = TrackAdapter() {
             openPlayerActivity(it)
         }
         historyTrackAdapter.updateTracks(getTracksFromHistory())
-        trackAdapter = TrackAdapter(){
+        trackAdapter = TrackAdapter() {
             searchHistory.addTrackToSearchHistory(it)
             historyTrackAdapter.updateTracks(getTracksFromHistory())
             openPlayerActivity(it)
@@ -97,20 +98,21 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+
+
+
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchHistoryViewGroup.visibility =
-                    if (inputSearchEditText.hasFocus() && s?.isEmpty() == true && getTracksFromHistory().size > 0) View.VISIBLE else View.GONE
+               setSearchHistoryViewGroupVisibility(s)
             }
 
             override fun afterTextChanged(s: Editable?) {
                 clearButton.visibility = clearButtonVisibility(s)
                 inputText = s
-                searchHistoryViewGroup.visibility =
-                    if (inputSearchEditText.hasFocus() && s?.isEmpty() == true && getTracksFromHistory().size > 0) View.VISIBLE else View.GONE
+                setSearchHistoryViewGroupVisibility(s)
             }
         }
 
@@ -175,6 +177,14 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
+    private fun getTracksFromHistory() = searchHistory.getTracksFromSharedPreferences()
+
+
+
+    private fun setSearchHistoryViewGroupVisibility(s: CharSequence?){
+        searchHistoryViewGroup.visibility = if (inputSearchEditText.hasFocus() && s?.isEmpty() == true && getTracksFromHistory().size > 0) View.VISIBLE else View.GONE
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(USER_INPUT, inputSearchEditText.text.toString())
@@ -185,7 +195,7 @@ class SearchActivity : AppCompatActivity() {
         inputSearchEditText.setText(savedInstanceState.getString(USER_INPUT))
     }
 
-    private fun openPlayerActivity(track: Track){
+    private fun openPlayerActivity(track: Track) {
         val intentPlayerActivity = Intent(this, PlayerActivity::class.java)
         intentPlayerActivity.putExtra(TRACK, Gson().toJson(track))
         startActivity(intentPlayerActivity)
@@ -255,6 +265,7 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
     }
+
     private fun hideKeyboard() {
         val view: View? = this.currentFocus
         if (view != null) {
@@ -263,6 +274,7 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0)
         }
     }
+
     companion object {
         const val USER_INPUT = "USER_INPUT"
         const val TRACK = "TRACK"

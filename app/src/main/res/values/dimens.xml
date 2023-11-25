@@ -34,4 +34,9 @@
     <dimen name="_22sp">22sp</dimen>
     <dimen name="_54dp">54dp</dimen>
     <dimen name="_30dp">30dp</dimen>
+    <dimen name="_210dp">210dp</dimen>
+    <dimen name="padding_28dp">28dp</dimen>
+    <dimen name="_17dp">17dp</dimen>
+    <dimen name="_39dp">39dp</dimen>
+    <dimen name="_29dp">29dp</dimen>
 </resources>

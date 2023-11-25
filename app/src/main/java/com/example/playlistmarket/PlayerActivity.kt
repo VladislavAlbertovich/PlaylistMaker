@@ -10,56 +10,48 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmarket.SearchActivity.Companion.TRACK
+import com.example.playlistmarket.databinding.ActivityMainBinding
+import com.example.playlistmarket.databinding.ActivityPlayerBinding
 import com.google.gson.Gson
 import org.w3c.dom.Text
+import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.Year
+import java.util.Date
 import java.util.Locale
 
 class PlayerActivity() : AppCompatActivity() {
 
     private lateinit var track: Track
-    private lateinit var albumImage: ImageView
-    private lateinit var trackName: TextView
-    private lateinit var artistName: TextView
-    private lateinit var durationTrack: TextView
-    private lateinit var albumName: TextView
-    private lateinit var year: TextView
-    private lateinit var genre: TextView
-    private lateinit var country: TextView
+    private lateinit var binding: ActivityPlayerBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player)
-        val buttonBack = findViewById<ImageButton>(R.id.buttonBack)
-        albumImage = findViewById(R.id.album_imageView)
-        trackName = findViewById(R.id.trackName)
-        artistName = findViewById(R.id.artistName)
-        durationTrack = findViewById(R.id.duration_value_text_view)
-        albumName = findViewById(R.id.album_value_text_view)
-        year = findViewById(R.id.year_value_text_view)
-        genre = findViewById(R.id.genre_value_text_view)
-        country = findViewById(R.id.country_value_text_view)
+        binding = ActivityPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         track = getTrack()
         bind()
 
-        buttonBack.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
+        binding.buttonBack.setOnClickListener {
+            finish()
         }
     }
 
     private fun bind() {
-        trackName.text = track.trackName
-        artistName.text = track.artistName
-        durationTrack.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)
-        if (track.collectionName.isNullOrEmpty()){
-            albumName.text = track.collectionName
-        } else {
-            albumName.text = "-"
+        binding.apply {
+            trackName.text = track.trackName
+            artistName.text = track.artistName
+            durationValueTextView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)
+            if (track.collectionName.isNullOrEmpty()){
+                binding.albumValueTextView.text = track.collectionName
+            } else {
+                binding.albumValueTextView.text = "-"
+            }
+            yearValueTextView.text = SimpleDateFormat("yyyy", Locale.getDefault()).format(track.releaseDate)
+            genreValueTextView.text = track.primaryGenreName
+            countryValueTextView.text = track.country
+            getCoverArtwork()
         }
-        year.text = track.releaseDate
-        genre.text = track.primaryGenreName
-        country.text = track.country
-        getCoverArtwork()
     }
 
     private fun getTrack(): Track {
@@ -73,8 +65,8 @@ class PlayerActivity() : AppCompatActivity() {
             .load(getCoverArtworkHighQuality(track))
             .placeholder(R.drawable.placeholder_album_in_player)
             .centerCrop()
-            .transform(RoundedCorners(albumImage.context.resources.getDimensionPixelOffset(R.dimen._8dp)))
-            .into(albumImage)
+            .transform(RoundedCorners(binding.albumImageView.context.resources.getDimensionPixelOffset(R.dimen._8dp)))
+            .into(binding.albumImageView)
     }
     private fun getCoverArtworkHighQuality(track: Track) = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 }
