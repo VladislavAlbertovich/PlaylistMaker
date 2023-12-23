@@ -24,4 +24,11 @@
     <string name="check_internet">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="you_finded_text">Вы искали</string>
     <string name="clear_history_text">Очистить историю</string>
+    <string name="duration">Длительность</string>
+    <string name="album">Альбом</string>
+    <string name="year">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
+    <string name="duration_value">0:00</string>
+    <string name="album_value">Название альбома</string>
 </resources>

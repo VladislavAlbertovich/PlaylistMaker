@@ -27,11 +27,11 @@
             android:id="@+id/trackName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/ys_display_regular"
+            android:maxLines="1"
             android:textColor="@color/text_day_night_color"
             android:textSize="@dimen/_16sp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:fontFamily = "@font/ys_display_regular"
             tools:text="@string/track_name" />
 
         <LinearLayout
