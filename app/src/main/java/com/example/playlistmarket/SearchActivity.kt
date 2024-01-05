@@ -7,6 +7,8 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -15,6 +17,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
@@ -26,6 +29,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
+
 
     private var inputText: Editable? = null
     private lateinit var inputSearchEditText: TextInputEditText
@@ -40,6 +44,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistory: SearchHistory
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historyTrackAdapter: TrackAdapter
+    private lateinit var progressBar: ProgressBar
 
     private val retrofit =
         Retrofit.Builder()
@@ -52,6 +57,10 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesSearchService = retrofit.create(ITunesSearchApi::class.java)
     private var tracks = ArrayList<Track>()
     private var lastTrackRequest = ""
+    private var isClickAllowed = true
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { search() }
 
     @SuppressLint("MissingInflatedId", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +75,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerView = findViewById<RecyclerView>(R.id.trackListRecyclerView)
         searchHistoryViewGroup = findViewById<LinearLayout>(R.id.search_history_viewgroup)
         historyRecyclerView = findViewById<RecyclerView>(R.id.history_recycler_view)
+        progressBar = findViewById(R.id.progressBar)
 
         val clearButton = findViewById<ImageView>(R.id.clearButtonImageView)
         val buttonBack = findViewById<ImageView>(R.id.buttonBack)
@@ -77,13 +87,17 @@ class SearchActivity : AppCompatActivity() {
 
 
         historyTrackAdapter = TrackAdapter() {
-            openPlayerActivity(it)
+            if (clickDebounce()) {
+                openPlayerActivity(it)
+            }
         }
         historyTrackAdapter.updateTracks(getTracksFromHistory())
         trackAdapter = TrackAdapter() {
-            searchHistory.addTrackToSearchHistory(it)
-            historyTrackAdapter.updateTracks(getTracksFromHistory())
-            openPlayerActivity(it)
+            if (clickDebounce()) {
+                searchHistory.addTrackToSearchHistory(it)
+                historyTrackAdapter.updateTracks(getTracksFromHistory())
+                openPlayerActivity(it)
+            }
         }
 
         val listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -99,14 +113,16 @@ class SearchActivity : AppCompatActivity() {
         }
 
 
-
-
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-               setSearchHistoryViewGroupVisibility(s)
+                setSearchHistoryViewGroupVisibility(s)
+                recyclerView.visibility = View.GONE
+                if (inputSearchEditText.text?.isNotEmpty() == true) {
+                    searchDebounce()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -156,7 +172,9 @@ class SearchActivity : AppCompatActivity() {
             it.addTextChangedListener(simpleTextWatcher)
             it.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    search(inputSearchEditText.text.toString())
+                    if (inputSearchEditText.text?.isNotEmpty() == true) {
+                        search()
+                    }
                     true
                 } else {
                     false
@@ -169,20 +187,18 @@ class SearchActivity : AppCompatActivity() {
         }
 
         updateButton.setOnClickListener {
-            search(lastTrackRequest)
+            search()
             if (lastTrackRequest.isNotEmpty()) {
                 clearButton.visibility = View.VISIBLE
             }
         }
-
     }
 
     private fun getTracksFromHistory() = searchHistory.getTracksFromSharedPreferences()
 
-
-
-    private fun setSearchHistoryViewGroupVisibility(s: CharSequence?){
-        searchHistoryViewGroup.visibility = if (inputSearchEditText.hasFocus() && s?.isEmpty() == true && getTracksFromHistory().size > 0) View.VISIBLE else View.GONE
+    private fun setSearchHistoryViewGroupVisibility(s: CharSequence?) {
+        searchHistoryViewGroup.visibility =
+            if (inputSearchEditText.hasFocus() && s?.isEmpty() == true && getTracksFromHistory().size > 0) View.VISIBLE else View.GONE
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -201,22 +217,25 @@ class SearchActivity : AppCompatActivity() {
         startActivity(intentPlayerActivity)
     }
 
-    private fun search(trackOrArtistName: String) {
-        recyclerView.visibility = View.VISIBLE
+    private fun search() {
+        progressBar.visibility = View.VISIBLE
+        recyclerView.visibility = View.INVISIBLE
         placeHolderMessage.visibility = View.GONE
         placeHolderAdditionalMessage.visibility = View.GONE
         placeHolderImage.visibility = View.GONE
         updateButton.visibility = View.GONE
-        lastTrackRequest = trackOrArtistName
+        lastTrackRequest = inputSearchEditText.text.toString()
         hideKeyboard()
 
         iTunesSearchService
-            .getTracks(trackOrArtistName)
+            .getTracks(inputSearchEditText.text.toString())
             .enqueue(object : Callback<ITunesSearchResponse> {
                 override fun onResponse(
                     call: Call<ITunesSearchResponse>,
                     response: Response<ITunesSearchResponse>
                 ) {
+                    progressBar.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
                     when (response.code()) {
                         200 -> {
                             if (response.body()?.tracks?.isNotEmpty() == true) {
@@ -231,6 +250,8 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<ITunesSearchResponse>, t: Throwable) {
+                    recyclerView.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
                     showMessage(
                         getString(R.string.connection_problem),
                         getString(R.string.check_internet)
@@ -275,9 +296,25 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    private fun clickDebounce(): Boolean {
+        var current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
     companion object {
         const val USER_INPUT = "USER_INPUT"
         const val TRACK = "TRACK"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
 

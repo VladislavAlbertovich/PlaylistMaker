@@ -1,9 +1,12 @@
 package com.example.playlistmarket
 
 import com.google.gson.annotations.SerializedName
+import java.net.URI
+import java.net.URL
 import java.util.Date
 
 data class Track(
+    val previewUrl: String,
     val trackName: String,
     val artistName: String,
     @SerializedName("trackTimeMillis") val trackTime: Long,

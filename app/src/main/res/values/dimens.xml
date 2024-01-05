@@ -39,4 +39,6 @@
     <dimen name="_17dp">17dp</dimen>
     <dimen name="_39dp">39dp</dimen>
     <dimen name="_29dp">29dp</dimen>
+    <dimen name="_200dp">200dp</dimen>
+    <dimen name="_44dp">44dp</dimen>
 </resources>
