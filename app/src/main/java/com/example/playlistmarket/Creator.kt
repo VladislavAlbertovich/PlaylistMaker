@@ -7,6 +7,7 @@ import com.example.playlistmarket.data.repositories.MediaPlayerRepositoryImpl
 import com.example.playlistmarket.domain.repository.TrackRepository
 import com.example.playlistmarket.domain.repository.MediaPlayerRepository
 import com.example.playlistmarket.domain.interactors.GetTrackUseCase
+import com.example.playlistmarket.domain.interactors.GetTrackUseCaseImpl
 import com.example.playlistmarket.domain.interactors.MediaPlayerUseCase
 import com.example.playlistmarket.domain.interactors.MediaPlayerUseCaseImpl
 
@@ -21,7 +22,7 @@ object Creator {
     }
 
     fun getTrackUseCase(sharedPreferences: SharedPreferences): GetTrackUseCase {
-        return GetTrackUseCase(provideGetTrackRepository(sharedPreferences))
+        return GetTrackUseCaseImpl(provideGetTrackRepository(sharedPreferences))
     }
 
     private fun provideGetTrackRepository(sharedPreferences: SharedPreferences): TrackRepository {
