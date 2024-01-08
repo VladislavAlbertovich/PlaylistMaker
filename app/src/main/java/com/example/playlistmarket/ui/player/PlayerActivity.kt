@@ -7,12 +7,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmarket.Creator
 import com.example.playlistmarket.R
-import com.example.playlistmarket.unsorted.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
-import com.example.playlistmarket.unsorted.PausePlayerListener
-import com.example.playlistmarket.unsorted.PlayerOnCompletionListener
-import com.example.playlistmarket.unsorted.PlayerOnPreparedListener
-import com.example.playlistmarket.unsorted.StartPlayerListener
-import com.example.playlistmarket.unsorted.TimeFragmentListener
+import com.example.playlistmarket.data.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
+import com.example.playlistmarket.domain.callbacks.PausePlayerListener
+import com.example.playlistmarket.domain.callbacks.PlayerOnCompletionListener
+import com.example.playlistmarket.domain.callbacks.PlayerOnPreparedListener
+import com.example.playlistmarket.domain.callbacks.StartPlayerListener
+import com.example.playlistmarket.domain.callbacks.TimeFragmentListener
 import com.example.playlistmarket.domain.models.Track
 import com.example.playlistmarket.databinding.ActivityPlayerBinding
 import java.text.SimpleDateFormat
@@ -42,7 +42,11 @@ class PlayerActivity() : AppCompatActivity() {
             finish()
         }
 
-        mediaPlayerUseCase.preparePlayer(track, playerOnPreparedListener(), playerOnCompletionListener())
+        mediaPlayerUseCase.preparePlayer(
+            track,
+            playerOnPreparedListener(),
+            playerOnCompletionListener()
+        )
 
         binding.playButton.setOnClickListener {
             mediaPlayerUseCase.playbackControl(
@@ -53,22 +57,40 @@ class PlayerActivity() : AppCompatActivity() {
         }
     }
 
-    private fun playerOnPreparedListener() =
-        PlayerOnPreparedListener { binding.playButton.isEnabled = true }
 
-    private fun playerOnCompletionListener() = PlayerOnCompletionListener {
-        binding.playButton.setImageResource(R.drawable.play_button)
+    private fun playerOnPreparedListener() =
+        object : PlayerOnPreparedListener {
+            override fun listen() {
+                binding.playButton.isEnabled = true
+            }
+        }
+
+
+    private fun playerOnCompletionListener() = object : PlayerOnCompletionListener {
+        override fun listen() {
+            binding.playButton.setImageResource(R.drawable.play_button)
+        }
     }
 
     private fun startPlayerListener() =
-        StartPlayerListener { binding.playButton.setImageResource(R.drawable.pause_button) }
+        object : StartPlayerListener {
+            override fun listen() {
+                binding.playButton.setImageResource(R.drawable.pause_button)
+            }
+        }
 
     private fun pausePlayerListener() =
-        PausePlayerListener { binding.playButton.setImageResource(R.drawable.play_button) }
+        object : PausePlayerListener {
+            override fun listen() {
+                binding.playButton.setImageResource(R.drawable.play_button)
+            }
+        }
 
-    private fun timeFragmentListener() = TimeFragmentListener {
-        binding.timeFragmentTextview.text =
-            simpleDateFormat.format(mediaPlayerUseCase.getCurrentPosition())
+    private fun timeFragmentListener() = object : TimeFragmentListener {
+        override fun listen() {
+            binding.timeFragmentTextview.text =
+                simpleDateFormat.format(mediaPlayerUseCase.getCurrentPosition())
+        }
     }
 
     private fun bind() {

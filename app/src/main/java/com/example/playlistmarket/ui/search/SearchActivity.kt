@@ -22,10 +22,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmarket.data.network.ITunesSearchApi
 import com.example.playlistmarket.R
-import com.example.playlistmarket.unsorted.OPEN_TRACK_KEY
-import com.example.playlistmarket.unsorted.SearchHistory
-import com.example.playlistmarket.unsorted.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
-import com.example.playlistmarket.unsorted.TRACKS_KEY
+import com.example.playlistmarket.data.OPEN_TRACK_KEY
+import com.example.playlistmarket.data.SearchHistory
+import com.example.playlistmarket.data.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
+import com.example.playlistmarket.data.TRACKS_KEY
 import com.example.playlistmarket.data.dto.ITunesSearchResponse
 import com.example.playlistmarket.domain.models.Track
 import com.example.playlistmarket.ui.player.PlayerActivity

@@ -2,11 +2,11 @@ package com.example.playlistmarket.domain.interactors
 
 import com.example.playlistmarket.domain.repository.MediaPlayerRepository
 import com.example.playlistmarket.domain.models.Track
-import com.example.playlistmarket.unsorted.PausePlayerListener
-import com.example.playlistmarket.unsorted.PlayerOnCompletionListener
-import com.example.playlistmarket.unsorted.PlayerOnPreparedListener
-import com.example.playlistmarket.unsorted.StartPlayerListener
-import com.example.playlistmarket.unsorted.TimeFragmentListener
+import com.example.playlistmarket.domain.callbacks.PausePlayerListener
+import com.example.playlistmarket.domain.callbacks.PlayerOnCompletionListener
+import com.example.playlistmarket.domain.callbacks.PlayerOnPreparedListener
+import com.example.playlistmarket.domain.callbacks.StartPlayerListener
+import com.example.playlistmarket.domain.callbacks.TimeFragmentListener
 
 class MediaPlayerUseCaseImpl(private val mediaPlayerRepository: MediaPlayerRepository): MediaPlayerUseCase {
     override fun preparePlayer(
