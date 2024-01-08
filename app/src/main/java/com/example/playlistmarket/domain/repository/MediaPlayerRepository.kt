@@ -1,6 +1,11 @@
-package com.example.playlistmarket.domain.api
+package com.example.playlistmarket.domain.repository
 
 import com.example.playlistmarket.domain.models.Track
+import com.example.playlistmarket.unsorted.PausePlayerListener
+import com.example.playlistmarket.unsorted.PlayerOnCompletionListener
+import com.example.playlistmarket.unsorted.PlayerOnPreparedListener
+import com.example.playlistmarket.unsorted.StartPlayerListener
+import com.example.playlistmarket.unsorted.TimeFragmentListener
 
 interface MediaPlayerRepository {
 
@@ -12,7 +17,7 @@ interface MediaPlayerRepository {
 
     fun pausePlayer(pausePlayerListener: PausePlayerListener)
     fun preparePlayer(
-        track: Track,
+        track: Track?,
         playerOnPreparedListener: PlayerOnPreparedListener,
         playerOnCompletionListener: PlayerOnCompletionListener
     )
@@ -27,13 +32,4 @@ interface MediaPlayerRepository {
     fun handlerRemoveCallbacks(timeFragmentListener: TimeFragmentListener)
     fun playerDestroy(timeFragmentListener: TimeFragmentListener)
 
-    fun interface Listener {
-        fun listen()
-    }
-
-    fun interface StartPlayerListener : Listener
-    fun interface PausePlayerListener : Listener
-    fun interface PlayerOnPreparedListener : Listener
-    fun interface PlayerOnCompletionListener : Listener
-    fun interface TimeFragmentListener : Listener
 }

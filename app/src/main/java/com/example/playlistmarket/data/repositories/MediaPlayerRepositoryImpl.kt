@@ -1,19 +1,19 @@
-package com.example.playlistmarket.data.mediaplayer
+package com.example.playlistmarket.data.repositories
 
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import com.example.playlistmarket.domain.api.MediaPlayerRepository
+import com.example.playlistmarket.domain.repository.MediaPlayerRepository
 import com.example.playlistmarket.domain.models.Track
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.StartPlayerListener
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.TimeFragmentListener
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.PausePlayerListener
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.PlayerOnPreparedListener
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.PlayerOnCompletionListener
+import com.example.playlistmarket.unsorted.PausePlayerListener
+import com.example.playlistmarket.unsorted.PlayerOnCompletionListener
+import com.example.playlistmarket.unsorted.PlayerOnPreparedListener
+import com.example.playlistmarket.unsorted.StartPlayerListener
+import com.example.playlistmarket.unsorted.TimeFragmentListener
 
 class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPlayerRepository {
 
-    private var playerState = STATE_DEFAULT
+    private var playerState = State.DEFAULT
     private val handler = Handler(Looper.getMainLooper())
     override fun startPlayer(
         startPlayerListener: StartPlayerListener,
@@ -21,30 +21,30 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
     ) {
         mediaPlayer.start()
         startPlayerListener.listen()
-        playerState = STATE_PLAYING
-        handler.postDelayed(createUpdateTimeFragmentTask(timeFragmentListener), DELAY)
+        playerState = State.PLAYING
+        handler.postDelayed(createUpdateTimeFragmentTask(timeFragmentListener), DELAY_MILLIS)
     }
 
     override fun pausePlayer(pausePlayerListener: PausePlayerListener) {
         mediaPlayer.pause()
         pausePlayerListener.listen()
-        playerState = STATE_PAUSED
+        playerState = State.PAUSED
     }
 
     override fun preparePlayer(
-        track: Track,
+        track: Track?,
         playerOnPreparedListener: PlayerOnPreparedListener,
         playerOnCompletionListener: PlayerOnCompletionListener
     ) {
-        mediaPlayer.setDataSource(track.previewUrl)
+        mediaPlayer.setDataSource(track?.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            playerState = STATE_PREPARED
+            playerState = State.PREPARED
             playerOnPreparedListener.listen()
         }
         mediaPlayer.setOnCompletionListener {
             playerOnCompletionListener.listen()
-            playerState = STATE_PREPARED
+            playerState = State.PREPARED
             mediaPlayer.reset()
             preparePlayer(track, playerOnPreparedListener, playerOnCompletionListener)
         }
@@ -53,27 +53,28 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
     override fun playbackControl(
         startPlayerListener: StartPlayerListener,
         timeFragmentListener: TimeFragmentListener,
-        pauseClickListener: PausePlayerListener
+        pausePlayerListener: PausePlayerListener
     ) {
         when (playerState) {
-            STATE_PREPARED, STATE_PAUSED -> startPlayer(startPlayerListener, timeFragmentListener)
-            STATE_PLAYING -> pausePlayer(pauseClickListener)
+            State.PREPARED, State.PAUSED -> startPlayer(startPlayerListener, timeFragmentListener)
+            State.PLAYING-> pausePlayer(pausePlayerListener)
+            else -> {}
         }
     }
 
     override fun createUpdateTimeFragmentTask(timeFragmentListener: TimeFragmentListener): Runnable {
         return object : Runnable {
             override fun run() {
-                if (playerState == STATE_PLAYING) {
+                if (playerState == State.PLAYING) {
                     timeFragmentListener.listen()
-                    handler.postDelayed(this, DELAY)
+                    handler.postDelayed(this, DELAY_MILLIS)
                 }
 
-                if (playerState == STATE_PAUSED) {
+                if (playerState == State.PAUSED) {
                     handler.removeCallbacks(this)
                 }
 
-                if (playerState == STATE_PREPARED) {
+                if (playerState == State.PREPARED) {
                     timeFragmentListener.listen()
                     handler.removeCallbacks(this)
                 }
@@ -87,7 +88,7 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
 
     override fun playerDestroy(timeFragmentListener: TimeFragmentListener) {
         mediaPlayer.release()
-        playerState = STATE_DEFAULT
+        playerState = State.DEFAULT
         handlerRemoveCallbacks(timeFragmentListener)
     }
 
@@ -96,12 +97,15 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
     }
 
     companion object {
-        private const val DELAY = 500L
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
+        private const val DELAY_MILLIS = 500L
     }
+}
+
+enum class State {
+    DEFAULT,
+    PREPARED,
+    PLAYING,
+    PAUSED
 }
 
 

@@ -1,6 +1,6 @@
-package com.example.playlistmarket.domain.use_case
+package com.example.playlistmarket.domain.interactors
 
-import com.example.playlistmarket.domain.impl.TrackRepository
+import com.example.playlistmarket.domain.repository.TrackRepository
 import com.example.playlistmarket.domain.models.Track
 
 class GetTrackUseCase(private val getTrackRepository: TrackRepository) {

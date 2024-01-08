@@ -1,4 +1,4 @@
-package com.example.playlistmarket.data
+package com.example.playlistmarket.data.network
 
 import com.example.playlistmarket.data.dto.Response
 

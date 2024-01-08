@@ -2,19 +2,21 @@ package com.example.playlistmarket
 
 import android.content.SharedPreferences
 import android.media.MediaPlayer
-import com.example.playlistmarket.data.TrackRepositoryImpl
-import com.example.playlistmarket.data.mediaplayer.MediaPlayerRepositoryImpl
-import com.example.playlistmarket.domain.impl.TrackRepository
-import com.example.playlistmarket.domain.api.MediaPlayerRepository
-import com.example.playlistmarket.domain.use_case.GetMediaPlayerUseCase
-import com.example.playlistmarket.domain.use_case.GetTrackUseCase
+import com.example.playlistmarket.data.repositories.TrackRepositoryImpl
+import com.example.playlistmarket.data.repositories.MediaPlayerRepositoryImpl
+import com.example.playlistmarket.domain.repository.TrackRepository
+import com.example.playlistmarket.domain.repository.MediaPlayerRepository
+import com.example.playlistmarket.domain.interactors.GetTrackUseCase
+import com.example.playlistmarket.domain.interactors.MediaPlayerUseCase
+import com.example.playlistmarket.domain.interactors.MediaPlayerUseCaseImpl
 
 object Creator {
-    fun getMediaPlayerUseCase(): GetMediaPlayerUseCase {
-        return GetMediaPlayerUseCase(provideMediaPlayerRepository())
+
+    fun provideMediaPlayerUseCase(): MediaPlayerUseCase {
+        return MediaPlayerUseCaseImpl(getMediaPlayerRepository())
     }
 
-    private fun provideMediaPlayerRepository(): MediaPlayerRepository {
+    private fun getMediaPlayerRepository(): MediaPlayerRepository {
         return MediaPlayerRepositoryImpl(MediaPlayer())
     }
 

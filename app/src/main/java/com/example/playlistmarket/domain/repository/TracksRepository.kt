@@ -1,4 +1,4 @@
-package com.example.playlistmarket.domain.api
+package com.example.playlistmarket.domain.repository
 
 import com.example.playlistmarket.domain.models.Track
 

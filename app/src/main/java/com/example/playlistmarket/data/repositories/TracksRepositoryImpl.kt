@@ -1,8 +1,9 @@
-package com.example.playlistmarket.data
+package com.example.playlistmarket.data.repositories
 
+import com.example.playlistmarket.data.network.NetworkClient
 import com.example.playlistmarket.data.dto.ITunesSearchRequest
 import com.example.playlistmarket.data.dto.ITunesSearchResponse
-import com.example.playlistmarket.domain.api.TracksRepository
+import com.example.playlistmarket.domain.repository.TracksRepository
 import com.example.playlistmarket.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale

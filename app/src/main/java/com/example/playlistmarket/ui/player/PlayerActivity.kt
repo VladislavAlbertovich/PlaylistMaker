@@ -7,25 +7,23 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmarket.Creator
 import com.example.playlistmarket.R
-import com.example.playlistmarket.data.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.StartPlayerListener
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.PausePlayerListener
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.TimeFragmentListener
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.PlayerOnCompletionListener
-import com.example.playlistmarket.domain.api.MediaPlayerRepository.PlayerOnPreparedListener
+import com.example.playlistmarket.unsorted.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
+import com.example.playlistmarket.unsorted.PausePlayerListener
+import com.example.playlistmarket.unsorted.PlayerOnCompletionListener
+import com.example.playlistmarket.unsorted.PlayerOnPreparedListener
+import com.example.playlistmarket.unsorted.StartPlayerListener
+import com.example.playlistmarket.unsorted.TimeFragmentListener
 import com.example.playlistmarket.domain.models.Track
 import com.example.playlistmarket.databinding.ActivityPlayerBinding
-import com.example.playlistmarket.domain.api.MediaPlayerRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity() : AppCompatActivity() {
 
-    private lateinit var track: Track
+    private var track: Track? = null
     private lateinit var binding: ActivityPlayerBinding
     private val simpleDateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-    private lateinit var player: MediaPlayerRepository
-
+    private val mediaPlayerUseCase = Creator.provideMediaPlayerUseCase()
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +32,6 @@ class PlayerActivity() : AppCompatActivity() {
         sharedPreferences =
             getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE)
 
-        player = Creator.getMediaPlayerUseCase().execute()
         track = Creator.getTrackUseCase(sharedPreferences).execute()
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -45,10 +42,10 @@ class PlayerActivity() : AppCompatActivity() {
             finish()
         }
 
-        player.preparePlayer(track, playerOnPreparedListener(), playerOnCompletionListener())
+        mediaPlayerUseCase.preparePlayer(track, playerOnPreparedListener(), playerOnCompletionListener())
 
         binding.playButton.setOnClickListener {
-            player.playbackControl(
+            mediaPlayerUseCase.playbackControl(
                 startPlayerListener(),
                 timeFragmentListener(),
                 pausePlayerListener()
@@ -71,24 +68,24 @@ class PlayerActivity() : AppCompatActivity() {
 
     private fun timeFragmentListener() = TimeFragmentListener {
         binding.timeFragmentTextview.text =
-            simpleDateFormat.format(player.getCurrentPosition())
+            simpleDateFormat.format(mediaPlayerUseCase.getCurrentPosition())
     }
 
     private fun bind() {
         binding.apply {
-            trackName.text = track.trackName
-            artistName.text = track.artistName
+            trackName.text = track?.trackName
+            artistName.text = track?.artistName
             durationValueTextView.text =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)
-            if (track.collectionName.isNullOrEmpty()) {
-                binding.albumValueTextView.text = track.collectionName
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track?.trackTime)
+            if (track?.collectionName.isNullOrEmpty()) {
+                binding.albumValueTextView.text = track?.collectionName
             } else {
                 binding.albumValueTextView.text = "-"
             }
             yearValueTextView.text =
-                SimpleDateFormat("yyyy", Locale.getDefault()).format(track.releaseDate)
-            genreValueTextView.text = track.primaryGenreName
-            countryValueTextView.text = track.country
+                SimpleDateFormat("yyyy", Locale.getDefault()).format(track?.releaseDate)
+            genreValueTextView.text = track?.primaryGenreName
+            countryValueTextView.text = track?.country
             getCoverArtwork()
         }
     }
@@ -96,7 +93,7 @@ class PlayerActivity() : AppCompatActivity() {
     private fun getCoverArtwork() {
         Glide
             .with(this)
-            .load(track.artworkUrl512())
+            .load(track?.artworkUrl512())
             .placeholder(R.drawable.placeholder_album_in_player)
             .centerCrop()
             .transform(
@@ -111,13 +108,13 @@ class PlayerActivity() : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        player.pausePlayer(pausePlayerListener())
-        player.handlerRemoveCallbacks(timeFragmentListener())
+        mediaPlayerUseCase.pausePlayer(pausePlayerListener())
+        mediaPlayerUseCase.handlerRemoveCallbacks(timeFragmentListener())
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        player.playerDestroy(timeFragmentListener())
+        mediaPlayerUseCase.playerDestroy(timeFragmentListener())
     }
 }
 
