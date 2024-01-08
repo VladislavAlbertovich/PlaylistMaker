@@ -1,10 +1,12 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.data
 
 import android.content.SharedPreferences
+import com.example.playlistmarket.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 const val TRACKS_KEY = "TRACKS_KEY"
+const val OPEN_TRACK_KEY = "OPEN_TRACK_KEY"
 const val TRACKS_HISTORY_SHARED_PREFERENCES_KEY = "TRACKS_HISTORY_SHARED_PREFERENCES_KEY"
 
 class SearchHistory(private val sharedPreferences: SharedPreferences) {
@@ -13,13 +15,13 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         val historySearchTracks: ArrayList<Track> = getTracksFromSharedPreferences()
         historySearchTracks.removeAll { it.trackId == newTrack.trackId }
         historySearchTracks.add(0, newTrack)
-        while (historySearchTracks.size > 10){
-            historySearchTracks.removeAt(historySearchTracks.size-1)
+        while (historySearchTracks.size > 10) {
+            historySearchTracks.removeAt(historySearchTracks.size - 1)
         }
         addTracksToSharedPreferences(historySearchTracks)
     }
 
-    fun clearSharedPreferences(){
+    fun clearSharedPreferences() {
         sharedPreferences.edit().clear().apply()
     }
 

@@ -1,10 +1,14 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import com.example.playlistmarket.ui.media_library.MediaLibraryActivity
+import com.example.playlistmarket.R
+import com.example.playlistmarket.ui.search.SearchActivity
+import com.example.playlistmarket.ui.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
@@ -14,7 +18,6 @@ class MainActivity : AppCompatActivity() {
         val buttonSearch = findViewById<Button>(R.id.buttonSearch)
         val buttonLibrary = findViewById<Button>(R.id.buttonLibrary)
         val buttonSettings = findViewById<Button>(R.id.buttonSettings)
-
         buttonSearch.setOnClickListener {
             val searchIntent = Intent(this, SearchActivity::class.java)
             startActivity(searchIntent)

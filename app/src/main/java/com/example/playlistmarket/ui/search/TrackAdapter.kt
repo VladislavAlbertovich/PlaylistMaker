@@ -1,10 +1,11 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.ui.search
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmarket.R
+import com.example.playlistmarket.domain.models.Track
 
 class TrackAdapter(val onTrackClickListener: OnTrackClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
 
