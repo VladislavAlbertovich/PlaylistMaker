@@ -1,8 +1,6 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.domain.models
 
 import com.google.gson.annotations.SerializedName
-import java.net.URI
-import java.net.URL
 import java.util.Date
 
 data class Track(
@@ -16,4 +14,7 @@ data class Track(
     val releaseDate: Date,
     val primaryGenreName: String,
     val country: String
-)
+) {
+    fun artworkUrl512() = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
+
+}

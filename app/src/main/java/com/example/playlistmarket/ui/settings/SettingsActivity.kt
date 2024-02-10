@@ -1,4 +1,4 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.ui.settings
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
@@ -7,10 +7,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmarket.App
+import com.example.playlistmarket.R
+import com.example.playlistmarket.THEME_SHARED_PREFERENCE
+import com.example.playlistmarket.THEME_SWITCH_KEY
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 
@@ -67,10 +69,10 @@ class SettingsActivity : AppCompatActivity() {
         themeSwitch.isChecked = sharedPrefence.getBoolean(THEME_SWITCH_KEY, false)
     }
 
-    private fun startActivitySafe(intent: Intent){
+    private fun startActivitySafe(intent: Intent) {
         try {
             startActivity(intent)
-        } catch (exception: ActivityNotFoundException){
+        } catch (exception: ActivityNotFoundException) {
             val errorMessage = getString(R.string.error_app_message)
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         }

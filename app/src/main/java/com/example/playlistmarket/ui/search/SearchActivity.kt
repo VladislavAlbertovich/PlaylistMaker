@@ -1,4 +1,4 @@
-package com.example.playlistmarket
+package com.example.playlistmarket.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -20,6 +20,15 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmarket.data.network.ITunesSearchApi
+import com.example.playlistmarket.R
+import com.example.playlistmarket.data.OPEN_TRACK_KEY
+import com.example.playlistmarket.data.SearchHistory
+import com.example.playlistmarket.data.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
+import com.example.playlistmarket.data.TRACKS_KEY
+import com.example.playlistmarket.data.dto.ITunesSearchResponse
+import com.example.playlistmarket.domain.models.Track
+import com.example.playlistmarket.ui.player.PlayerActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import retrofit2.Call
@@ -173,7 +182,7 @@ class SearchActivity : AppCompatActivity() {
             it.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if (inputSearchEditText.text?.isNotEmpty() == true) {
-                        search()
+                        searchDebounce()
                     }
                     true
                 } else {
@@ -212,9 +221,18 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun openPlayerActivity(track: Track) {
+        if (sharedPreferences.getString(OPEN_TRACK_KEY, null) != null) {
+            sharedPreferences.apply {
+                edit().remove(OPEN_TRACK_KEY).apply()
+                edit().putString(OPEN_TRACK_KEY, Gson().toJson(track)).apply()
+            }
+        } else {
+            sharedPreferences.edit().putString(OPEN_TRACK_KEY, Gson().toJson(track)).apply()
+        }
         val intentPlayerActivity = Intent(this, PlayerActivity::class.java)
-        intentPlayerActivity.putExtra(TRACK, Gson().toJson(track))
+
         startActivity(intentPlayerActivity)
+
     }
 
     private fun search() {
