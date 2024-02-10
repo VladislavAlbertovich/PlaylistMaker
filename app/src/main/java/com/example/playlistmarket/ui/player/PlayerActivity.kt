@@ -1,20 +1,15 @@
 package com.example.playlistmarket.ui.player
 
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmarket.Creator
 import com.example.playlistmarket.R
-import com.example.playlistmarket.data.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
-import com.example.playlistmarket.domain.callbacks.PausePlayerListener
-import com.example.playlistmarket.domain.callbacks.PlayerOnCompletionListener
-import com.example.playlistmarket.domain.callbacks.PlayerOnPreparedListener
-import com.example.playlistmarket.domain.callbacks.StartPlayerListener
-import com.example.playlistmarket.domain.callbacks.TimeFragmentListener
-import com.example.playlistmarket.domain.models.Track
 import com.example.playlistmarket.databinding.ActivityPlayerBinding
+import com.example.playlistmarket.domain.search.models.Track
+import com.example.playlistmarket.presentation.player.PlayerViewModel
+import com.example.playlistmarket.ui.player.Model.PlayerScreenState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -22,74 +17,55 @@ class PlayerActivity() : AppCompatActivity() {
 
     private var track: Track? = null
     private lateinit var binding: ActivityPlayerBinding
-    private val simpleDateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-    private val mediaPlayerUseCase = Creator.provideMediaPlayerUseCase()
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var playerViewModel: PlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedPreferences =
-            getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE)
-
-        track = Creator.getTrackUseCase(sharedPreferences).execute()
-
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        playerViewModel = ViewModelProvider(
+            this,
+            PlayerViewModel.getViewModelFactory()
+        )[PlayerViewModel::class.java]
+
+        track = playerViewModel.getTrack()
+
         bind()
+
+        playerViewModel.observePlayerScreenState().observe(this) { state ->
+            when (state) {
+                is PlayerScreenState.Paused -> {
+                    binding.playButton.setImageResource(R.drawable.play_button)
+                }
+
+                is PlayerScreenState.Default -> {
+                }
+
+                is PlayerScreenState.Prepared -> {
+                    binding.playButton.isEnabled = true
+                    binding.playButton.setImageResource(R.drawable.play_button)
+                    binding.timeFragmentTextview.text = "00:00"
+                    playerViewModel.stopUpdateTime()
+                }
+
+                is PlayerScreenState.Playing -> {
+                    binding.playButton.setImageResource(R.drawable.pause_button)
+                    playerViewModel.startUpdateTime()
+                    playerViewModel.observeTime().observe(this) {
+                        binding.timeFragmentTextview.text = it
+                    }
+                }
+            }
+        }
 
         binding.buttonBack.setOnClickListener {
             finish()
         }
 
-        mediaPlayerUseCase.preparePlayer(
-            track,
-            playerOnPreparedListener(),
-            playerOnCompletionListener()
-        )
-
         binding.playButton.setOnClickListener {
-            mediaPlayerUseCase.playbackControl(
-                startPlayerListener(),
-                timeFragmentListener(),
-                pausePlayerListener()
-            )
-        }
-    }
-
-
-    private fun playerOnPreparedListener() =
-        object : PlayerOnPreparedListener {
-            override fun listen() {
-                binding.playButton.isEnabled = true
-            }
-        }
-
-
-    private fun playerOnCompletionListener() = object : PlayerOnCompletionListener {
-        override fun listen() {
-            binding.playButton.setImageResource(R.drawable.play_button)
-        }
-    }
-
-    private fun startPlayerListener() =
-        object : StartPlayerListener {
-            override fun listen() {
-                binding.playButton.setImageResource(R.drawable.pause_button)
-            }
-        }
-
-    private fun pausePlayerListener() =
-        object : PausePlayerListener {
-            override fun listen() {
-                binding.playButton.setImageResource(R.drawable.play_button)
-            }
-        }
-
-    private fun timeFragmentListener() = object : TimeFragmentListener {
-        override fun listen() {
-            binding.timeFragmentTextview.text =
-                simpleDateFormat.format(mediaPlayerUseCase.getCurrentPosition())
+            playerViewModel.playbackControl()
         }
     }
 
@@ -98,7 +74,7 @@ class PlayerActivity() : AppCompatActivity() {
             trackName.text = track?.trackName
             artistName.text = track?.artistName
             durationValueTextView.text =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track?.trackTime)
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track?.trackTimeMillis)
             if (track?.collectionName.isNullOrEmpty()) {
                 binding.albumValueTextView.text = track?.collectionName
             } else {
@@ -128,15 +104,21 @@ class PlayerActivity() : AppCompatActivity() {
             .into(binding.albumImageView)
     }
 
+    override fun onResume() {
+        super.onResume()
+        playerViewModel.onReset()
+        playerViewModel.preparePlayer(track)
+
+    }
+
     override fun onPause() {
         super.onPause()
-        mediaPlayerUseCase.pausePlayer(pausePlayerListener())
-        mediaPlayerUseCase.handlerRemoveCallbacks(timeFragmentListener())
+        playerViewModel.onPause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayerUseCase.playerDestroy(timeFragmentListener())
+        playerViewModel.onDestroy()
     }
 }
 

@@ -21,7 +21,7 @@
     <string name="nothing_found">Ничего не нашлось</string>
     <string name="update">Обновить</string>
     <string name="connection_problem">Проблемы со связью</string>
-    <string name="check_internet">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="download_fail">Загрузка не удалась.</string>
     <string name="you_finded_text">Вы искали</string>
     <string name="clear_history_text">Очистить историю</string>
     <string name="duration">Длительность</string>
