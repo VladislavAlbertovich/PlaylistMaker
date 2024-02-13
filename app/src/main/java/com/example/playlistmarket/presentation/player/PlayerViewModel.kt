@@ -1,32 +1,29 @@
 package com.example.playlistmarket.presentation.player
 
-import android.app.Application
-import android.content.Context.MODE_PRIVATE
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmarket.App
 import com.example.playlistmarket.Creator
 import com.example.playlistmarket.data.player.impl.State
-import com.example.playlistmarket.data.search.impl.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
+import com.example.playlistmarket.domain.player.MediaPlayerUseCase
 import com.example.playlistmarket.domain.search.models.Track
+import com.example.playlistmarket.domain.track.TrackUseCase
 import com.example.playlistmarket.ui.player.Model.PlayerScreenState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(application: Application) : AndroidViewModel(application) {
+class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCase: TrackUseCase) : ViewModel() {
 
     private val mainThreadHandler = Handler(Looper.getMainLooper())
 
-    private val playerUseCase = Creator.provideMediaPlayerUseCase()
-
-    private val sharedPreferences =
-        application.getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE)
-    private val track = Creator.provideTrackUseCase(sharedPreferences).execute()
+    private val track = trackUseCase.execute()
 
     private val playerStateLiveData = MutableLiveData<PlayerScreenState>(PlayerScreenState.Default)
     fun observePlayerScreenState(): LiveData<PlayerScreenState> = playerStateLiveData
@@ -34,11 +31,16 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val timeLiveData = MutableLiveData<String>()
     fun observeTime(): LiveData<String> = timeLiveData
 
+    private val trackLiveData = MutableLiveData(track)
+    fun observeTrack(): LiveData<Track> = trackLiveData
+
     companion object {
         private const val DELAY = 100L
         fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                PlayerViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
+                val playerUseCase = Creator.provideMediaPlayerUseCase()
+                val trackUseCase = Creator.provideTrackUseCase(this[APPLICATION_KEY] as App)
+                PlayerViewModel(playerUseCase, trackUseCase)
             }
         }
     }
@@ -55,14 +57,9 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         playerUseCase.playbackControl()
         updateLiveData()
     }
-    fun getTrack() = track
-
-
-
     fun preparePlayer(track: Track?) {
         playerUseCase.preparePlayer(track)
     }
-
 
     fun onPause() {
         playerUseCase.pausePlayer()
@@ -75,7 +72,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun onDestroy(){
-        playerUseCase.playerDestroy()
+        stopUpdateTime()
     }
 
     private fun updateLiveData() {
@@ -101,13 +98,14 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private fun updateTime(): Runnable {
         return object : Runnable {
             override fun run() {
+                if (playerUseCase != null){
                 timeLiveData.postValue(
                     convertTime(
                         playerUseCase.getCurrentPosition()
                     )
                 )
                 mainThreadHandler.postDelayed(this, DELAY)
-            }
+            }}
         }
     }
     private fun convertTime(time: Int): String {

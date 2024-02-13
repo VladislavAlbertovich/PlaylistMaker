@@ -19,9 +19,7 @@ class MediaPlayerUseCaseImpl(private val mediaPlayerRepository: MediaPlayerRepos
         return mediaPlayerRepository.getCurrentPosition()
     }
 
-    override fun playerDestroy() {
-        mediaPlayerRepository.playerDestroy()
-    }
+
 
     override fun pausePlayer() {
         mediaPlayerRepository.pausePlayer()

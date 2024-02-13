@@ -10,7 +10,6 @@ interface MediaPlayerRepository {
     fun playbackControl()
     fun pausePlayer()
     fun preparePlayer(track: Track?)
-    fun playerDestroy()
     fun getPlayerState(): State
     fun onReset()
 }

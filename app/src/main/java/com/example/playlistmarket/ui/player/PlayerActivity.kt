@@ -30,9 +30,11 @@ class PlayerActivity() : AppCompatActivity() {
             PlayerViewModel.getViewModelFactory()
         )[PlayerViewModel::class.java]
 
-        track = playerViewModel.getTrack()
+        track = playerViewModel.observeTrack().value
 
         bind()
+
+
 
         playerViewModel.observePlayerScreenState().observe(this) { state ->
             when (state) {
@@ -108,7 +110,6 @@ class PlayerActivity() : AppCompatActivity() {
         super.onResume()
         playerViewModel.onReset()
         playerViewModel.preparePlayer(track)
-
     }
 
     override fun onPause() {
@@ -117,8 +118,9 @@ class PlayerActivity() : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         playerViewModel.onDestroy()
+
+        super.onDestroy()
     }
 }
 

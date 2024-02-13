@@ -13,7 +13,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmarket.App
 import com.example.playlistmarket.R
 import com.example.playlistmarket.databinding.ActivitySearchBinding
 import com.example.playlistmarket.domain.search.models.Track
@@ -31,24 +30,27 @@ class SearchActivity : AppCompatActivity() {
     private var lastTrackRequest: String = ""
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
-
     private var simpleTextWatcher: TextWatcher? = null
-
     @SuppressLint("MissingInflatedId", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        searchViewModel =
+            ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
 
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        searchViewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
+        searchViewModel.observeTracksHistory().observe(this){
+            if (it.size>0){
+                binding.searchHistoryViewgroup.visibility = View.VISIBLE
+            }
+            historyTrackAdapter.updateTracks(it)
+        }
+
         searchViewModel.observeState().observe(this){
             render(it)
         }
-        searchViewModel.observeTracksHistory().observe(this){
-            historyUpdate(it)
-        }
-        searchViewModel.onCreate()
 
         historyTrackAdapter = TrackAdapter() {
             if (clickDebounce()) {
@@ -105,7 +107,7 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchInputEditText.let {
             it.requestFocus()
-            if (it.hasFocus() && searchViewModel.historyNotEmpty()) {
+            if (it.hasFocus() && historyIsNotEmpty()) {
                 binding.searchHistoryViewgroup.visibility = View.VISIBLE
             }
             it.postDelayed(object : Runnable {
@@ -141,13 +143,17 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun historyIsNotEmpty(): Boolean{
+        var tracks = ArrayList<Track>()
+        searchViewModel.observeTracksHistory().observe(this){
+            tracks = it
+        }
+        return tracks.isNotEmpty()
+    }
     override fun onDestroy() {
         super.onDestroy()
         simpleTextWatcher?.let { binding.searchInputEditText.removeTextChangedListener(it) }
         searchViewModel.onDestroy()
-        if (isFinishing){
-            (this.application as? App)?.searchViewModel = null
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -162,7 +168,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setSearchHistoryViewGroupVisibility(s: CharSequence?) {
         binding.searchHistoryViewgroup.visibility =
-            if (binding.searchInputEditText.hasFocus() && s?.isEmpty() == true && searchViewModel.historyNotEmpty()) View.VISIBLE else View.GONE
+            if (binding.searchInputEditText.hasFocus() && s?.isEmpty() == true && historyIsNotEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun clearButtonAndSearchHistoryGroupVisibility(s: CharSequence?) {
@@ -238,10 +244,6 @@ class SearchActivity : AppCompatActivity() {
         trackAdapter.updateTracks(ArrayList())
         binding.placeholderText.text = emptyMessage
         binding.placeholderImage.setImageDrawable(getDrawable(R.drawable.nothing_was_found))
-    }
-
-    private fun historyUpdate(historyTracks: ArrayList<Track>) {
-        historyTrackAdapter.updateTracks(historyTracks)
     }
 
     private fun render(state: SearchState) {

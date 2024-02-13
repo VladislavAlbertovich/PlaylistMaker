@@ -8,7 +8,6 @@ interface MediaPlayerUseCase {
     fun preparePlayer(track: Track?)
     fun playbackControl()
     fun getCurrentPosition(): Int
-    fun playerDestroy()
     fun pausePlayer()
     fun startPlayer()
     fun getPlayerState():State

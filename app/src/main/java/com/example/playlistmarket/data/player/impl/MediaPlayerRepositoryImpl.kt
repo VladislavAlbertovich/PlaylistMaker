@@ -44,13 +44,10 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
         playerState = State.DEFAULT
     }
 
-    override fun playerDestroy() {
-        mediaPlayer.release()
-    }
-
     override fun getCurrentPosition(): Int {
         return mediaPlayer.currentPosition
     }
+
     override fun getPlayerState() = playerState
 
 }

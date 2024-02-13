@@ -1,6 +1,7 @@
 package com.example.playlistmarket.data.search.impl
 
-import android.content.SharedPreferences
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import com.example.playlistmarket.domain.search.SearchHistoryRepository
 import com.example.playlistmarket.domain.search.models.Track
 import com.google.gson.Gson
@@ -10,8 +11,9 @@ const val TRACKS_FROM_HISTORY_KEY = "TRACKS_FROM_HISTORY_KEY"
 const val OPEN_TRACK_KEY = "OPEN_TRACK_KEY"
 const val TRACKS_HISTORY_SHARED_PREFERENCES_KEY = "TRACKS_HISTORY_SHARED_PREFERENCES_KEY"
 
-class SearchHistoryRepositoryImpl(private val sharedPreferences: SharedPreferences?): SearchHistoryRepository {
+class SearchHistoryRepositoryImpl(context: Context): SearchHistoryRepository {
 
+    private val sharedPreferences = context.getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE)
     override fun addTrackToSearchHistory(newTrack: Track) {
         val historySearchTracks: ArrayList<Track> = getTracksFromSearchHistory()
         historySearchTracks.removeAll { it.trackId == newTrack.trackId }
@@ -23,11 +25,11 @@ class SearchHistoryRepositoryImpl(private val sharedPreferences: SharedPreferenc
     }
 
     override fun clearTracksFromSearchHistory() {
-        sharedPreferences?.edit()?.clear()?.apply()
+        sharedPreferences.edit().clear().apply()
     }
 
     override fun getTracksFromSearchHistory(): ArrayList<Track> {
-        val jsonTracks = sharedPreferences?.getString(TRACKS_FROM_HISTORY_KEY, null) ?: return ArrayList()
+        val jsonTracks = sharedPreferences.getString(TRACKS_FROM_HISTORY_KEY, null) ?: return ArrayList()
         return extractTracksFromJson(jsonTracks)
     }
 
@@ -37,8 +39,10 @@ class SearchHistoryRepositoryImpl(private val sharedPreferences: SharedPreferenc
     }
 
     private fun addTracksToSharedPreferences(tracks: ArrayList<Track>) {
-        sharedPreferences?.edit()?.putString(TRACKS_FROM_HISTORY_KEY, createJsonFromTracks(tracks))
-            ?.apply()
+        sharedPreferences.
+        edit().
+        putString(TRACKS_FROM_HISTORY_KEY, createJsonFromTracks(tracks))?.
+        apply()
     }
 
     private fun createJsonFromTracks(tracks: ArrayList<Track>): String {
