@@ -11,7 +11,9 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmarket.App
 import com.example.playlistmarket.Creator
+import com.example.playlistmarket.R
 import com.example.playlistmarket.domain.player.callbacks.TracksConsumer
+import com.example.playlistmarket.domain.resource_provider.ResourceProviderInteractor
 import com.example.playlistmarket.domain.search.interactors.FindTracksUseCase
 import com.example.playlistmarket.domain.search.interactors.SearchHistoryInteractor
 import com.example.playlistmarket.domain.search.models.Track
@@ -21,7 +23,8 @@ import com.example.playlistmarket.ui.search.models.SearchState
 class SearchViewModel(
     private val findTracksUseCase: FindTracksUseCase,
     private val searchHistoryInteractor: SearchHistoryInteractor,
-    private val trackUseCase: TrackUseCase
+    private val trackUseCase: TrackUseCase,
+    private val resourceProviderInteractor: ResourceProviderInteractor
 ) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<SearchState>()
@@ -41,7 +44,8 @@ class SearchViewModel(
                 val findTracksUseCase = Creator.provideFindTracksUseCase(this[APPLICATION_KEY] as App)
                 val searchHistoryInteractor = Creator.provideSearchHistoryInteractor(this[APPLICATION_KEY] as App)
                 val trackUseCase = Creator.provideTrackUseCase(this[APPLICATION_KEY] as App)
-                SearchViewModel(findTracksUseCase, searchHistoryInteractor, trackUseCase)
+                val resourceProviderInteractor = Creator.provideResourceProviderInteractor(this[APPLICATION_KEY] as App)
+                SearchViewModel(findTracksUseCase, searchHistoryInteractor, trackUseCase, resourceProviderInteractor)
             }
         }
     }
@@ -109,7 +113,7 @@ class SearchViewModel(
                         SearchState(
                             ArrayList(),
                             false,
-                            "Загрузка не удалась",
+                            resourceProviderInteractor.getString(R.string.download_fail),
                             message
                         )
                     )
@@ -118,7 +122,7 @@ class SearchViewModel(
                         SearchState(
                             ArrayList(),
                             false,
-                            "Ничего не найдено",
+                            resourceProviderInteractor.getString(R.string.nothing_found),
                             ""
                         )
                     )

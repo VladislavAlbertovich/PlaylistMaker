@@ -15,7 +15,6 @@ import java.util.Locale
 
 class PlayerActivity() : AppCompatActivity() {
 
-    private var track: Track? = null
     private lateinit var binding: ActivityPlayerBinding
     private lateinit var playerViewModel: PlayerViewModel
 
@@ -30,9 +29,9 @@ class PlayerActivity() : AppCompatActivity() {
             PlayerViewModel.getViewModelFactory()
         )[PlayerViewModel::class.java]
 
-        track = playerViewModel.observeTrack().value
-
-        bind()
+        playerViewModel.observeTrack().observe(this){
+            bind(it)
+        }
 
 
 
@@ -71,7 +70,7 @@ class PlayerActivity() : AppCompatActivity() {
         }
     }
 
-    private fun bind() {
+    private fun bind(track: Track) {
         binding.apply {
             trackName.text = track?.trackName
             artistName.text = track?.artistName
@@ -86,11 +85,11 @@ class PlayerActivity() : AppCompatActivity() {
                 SimpleDateFormat("yyyy", Locale.getDefault()).format(track?.releaseDate)
             genreValueTextView.text = track?.primaryGenreName
             countryValueTextView.text = track?.country
-            getCoverArtwork()
+            getCoverArtwork(track)
         }
     }
 
-    private fun getCoverArtwork() {
+    private fun getCoverArtwork(track: Track) {
         Glide
             .with(this)
             .load(track?.artworkUrl512())
@@ -109,7 +108,7 @@ class PlayerActivity() : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         playerViewModel.onReset()
-        playerViewModel.preparePlayer(track)
+        playerViewModel.preparePlayer()
     }
 
     override fun onPause() {
@@ -119,7 +118,6 @@ class PlayerActivity() : AppCompatActivity() {
 
     override fun onDestroy() {
         playerViewModel.onDestroy()
-
         super.onDestroy()
     }
 }

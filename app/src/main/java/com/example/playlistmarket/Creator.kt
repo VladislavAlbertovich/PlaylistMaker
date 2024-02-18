@@ -3,6 +3,7 @@ package com.example.playlistmarket
 import android.content.Context
 import android.media.MediaPlayer
 import com.example.playlistmarket.data.player.impl.MediaPlayerRepositoryImpl
+import com.example.playlistmarket.data.resource_provider.ResourceProviderRepositoryImpl
 import com.example.playlistmarket.data.search.impl.SearchHistoryRepositoryImpl
 import com.example.playlistmarket.data.search.impl.SearchRepositoryImpl
 import com.example.playlistmarket.data.search.network.NetworkClient
@@ -12,6 +13,9 @@ import com.example.playlistmarket.data.track.impl.TrackRepositoryImpl
 import com.example.playlistmarket.domain.player.MediaPlayerRepository
 import com.example.playlistmarket.domain.player.MediaPlayerUseCase
 import com.example.playlistmarket.domain.player.impl.MediaPlayerUseCaseImpl
+import com.example.playlistmarket.domain.resource_provider.ResourceProviderInteractor
+import com.example.playlistmarket.domain.resource_provider.ResourceProviderRepository
+import com.example.playlistmarket.domain.resource_provider.impl.ResourceProviderInteractorImpl
 import com.example.playlistmarket.domain.search.SearchHistoryRepository
 import com.example.playlistmarket.domain.search.SearchRepository
 import com.example.playlistmarket.domain.search.interactors.FindTracksUseCase
@@ -65,5 +69,13 @@ object Creator {
 
     fun provideSettingsInteractor(context: Context): SettingsInteractor{
         return SettingsInteractorImpl(getSettingsRepository(context))
+    }
+
+    fun provideResourceProviderInteractor(context: Context): ResourceProviderInteractor {
+        return ResourceProviderInteractorImpl(getResourceProviderRepository(context))
+    }
+
+    private fun getResourceProviderRepository(context: Context): ResourceProviderRepository {
+        return ResourceProviderRepositoryImpl(context)
     }
 }

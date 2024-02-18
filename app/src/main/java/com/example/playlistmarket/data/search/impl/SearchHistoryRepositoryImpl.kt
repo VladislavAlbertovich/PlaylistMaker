@@ -25,11 +25,15 @@ class SearchHistoryRepositoryImpl(context: Context): SearchHistoryRepository {
     }
 
     override fun clearTracksFromSearchHistory() {
-        sharedPreferences.edit().clear().apply()
+        sharedPreferences
+            .edit()
+            .clear()
+            .apply()
     }
 
     override fun getTracksFromSearchHistory(): ArrayList<Track> {
-        val jsonTracks = sharedPreferences.getString(TRACKS_FROM_HISTORY_KEY, null) ?: return ArrayList()
+        val jsonTracks = sharedPreferences
+            .getString(TRACKS_FROM_HISTORY_KEY, null)?: return ArrayList()
         return extractTracksFromJson(jsonTracks)
     }
 
@@ -39,10 +43,10 @@ class SearchHistoryRepositoryImpl(context: Context): SearchHistoryRepository {
     }
 
     private fun addTracksToSharedPreferences(tracks: ArrayList<Track>) {
-        sharedPreferences.
-        edit().
-        putString(TRACKS_FROM_HISTORY_KEY, createJsonFromTracks(tracks))?.
-        apply()
+        sharedPreferences
+            .edit()
+            .putString(TRACKS_FROM_HISTORY_KEY, createJsonFromTracks(tracks))
+            ?.apply()
     }
 
     private fun createJsonFromTracks(tracks: ArrayList<Track>): String {

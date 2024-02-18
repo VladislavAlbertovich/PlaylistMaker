@@ -42,7 +42,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         searchViewModel.observeTracksHistory().observe(this){
-            if (it.size>0){
+            if (it.isNotEmpty()&& binding.searchInputEditText.hasFocus()){
                 binding.searchHistoryViewgroup.visibility = View.VISIBLE
             }
             historyTrackAdapter.updateTracks(it)
@@ -69,7 +69,6 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                setSearchHistoryViewGroupVisibility(s)
                 binding.trackListRecyclerView.visibility = View.GONE
                 if (binding.searchInputEditText.text?.isNotEmpty() == true) {
                     searchViewModel.searchDebounce(s?.toString() ?: "")
@@ -107,9 +106,7 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchInputEditText.let {
             it.requestFocus()
-            if (it.hasFocus() && historyIsNotEmpty()) {
-                binding.searchHistoryViewgroup.visibility = View.VISIBLE
-            }
+
             it.postDelayed(object : Runnable {
                 override fun run() {
                     val inputMethodManager =
@@ -129,10 +126,7 @@ class SearchActivity : AppCompatActivity() {
                     false
                 }
             }
-            it.setOnFocusChangeListener { _, hasFocus ->
-                setSearchHistoryViewGroupVisibility(it.text)
 
-            }
         }
 
         binding.updateButton.setOnClickListener {
@@ -143,13 +137,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun historyIsNotEmpty(): Boolean{
-        var tracks = ArrayList<Track>()
-        searchViewModel.observeTracksHistory().observe(this){
-            tracks = it
-        }
-        return tracks.isNotEmpty()
-    }
     override fun onDestroy() {
         super.onDestroy()
         simpleTextWatcher?.let { binding.searchInputEditText.removeTextChangedListener(it) }
@@ -166,18 +153,13 @@ class SearchActivity : AppCompatActivity() {
         binding.searchInputEditText.setText(savedInstanceState.getString(USER_INPUT))
     }
 
-    private fun setSearchHistoryViewGroupVisibility(s: CharSequence?) {
-        binding.searchHistoryViewgroup.visibility =
-            if (binding.searchInputEditText.hasFocus() && s?.isEmpty() == true && historyIsNotEmpty()) View.VISIBLE else View.GONE
-    }
-
     private fun clearButtonAndSearchHistoryGroupVisibility(s: CharSequence?) {
         if (s.isNullOrEmpty()) {
             binding.clearButtonImageView.visibility = View.GONE
-            setSearchHistoryViewGroupVisibility(s)
             binding.placeholderImage.visibility = View.GONE
             binding.placeholderText.visibility = View.GONE
             binding.placeholderAdditionalMessage.visibility = View.GONE
+            binding.searchHistoryViewgroup.visibility = View.VISIBLE
 
         } else {
             binding.clearButtonImageView.visibility = View.VISIBLE

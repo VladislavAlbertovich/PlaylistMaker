@@ -57,7 +57,7 @@ class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCas
         playerUseCase.playbackControl()
         updateLiveData()
     }
-    fun preparePlayer(track: Track?) {
+    fun preparePlayer() {
         playerUseCase.preparePlayer(track)
     }
 
