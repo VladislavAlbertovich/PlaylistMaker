@@ -9,12 +9,11 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmarket.App
 import com.example.playlistmarket.R
-import com.example.playlistmarket.THEME_SHARED_PREFERENCE
-import com.example.playlistmarket.THEME_SWITCH_KEY
+import com.example.playlistmarket.presentation.settings.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
-
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -27,7 +26,10 @@ class SettingsActivity : AppCompatActivity() {
         val buttonSupport = findViewById<LinearLayout>(R.id.buttonSupport)
         val buttonUserAgreement = findViewById<LinearLayout>(R.id.buttonUserAgreement)
         val themeSwitch = findViewById<SwitchMaterial>(R.id.themeSwitch)
-        val sharedPrefence = getSharedPreferences(THEME_SHARED_PREFERENCE, MODE_PRIVATE)
+        val viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java]
+        viewModel.observeLiveData().observe(this){
+            themeSwitch.isChecked = it
+        }
 
         buttonBack.setOnClickListener {
             finish()
@@ -63,10 +65,9 @@ class SettingsActivity : AppCompatActivity() {
             startActivitySafe(userAgreementIntent)
         }
 
-        themeSwitch.setOnCheckedChangeListener { switcher, isChecked ->
+        themeSwitch.setOnCheckedChangeListener { _, isChecked ->
             (application as App).switchTheme(isChecked)
         }
-        themeSwitch.isChecked = sharedPrefence.getBoolean(THEME_SWITCH_KEY, false)
     }
 
     private fun startActivitySafe(intent: Intent) {

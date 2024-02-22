@@ -1,7 +1,9 @@
 package com.example.playlistmarket
 
 import android.app.Application
+import android.app.UiModeManager
 import android.content.SharedPreferences
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatDelegate
 
 const val THEME_SHARED_PREFERENCE = "theme_shared_preference"
@@ -28,5 +30,12 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
+        ComponentActivity.UI_MODE_SERVICE
+        val uiManager = this.getSystemService(ComponentActivity.UI_MODE_SERVICE) as UiModeManager
+        if (isDarkThemeEnabled) {
+            uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES)
+        } else {
+            uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO)
+        }
     }
 }

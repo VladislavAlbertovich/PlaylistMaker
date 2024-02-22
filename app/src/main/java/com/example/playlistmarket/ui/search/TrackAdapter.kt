@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmarket.R
-import com.example.playlistmarket.domain.models.Track
+import com.example.playlistmarket.domain.search.models.Track
 
 class TrackAdapter(val onTrackClickListener: OnTrackClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
 
@@ -29,7 +29,7 @@ class TrackAdapter(val onTrackClickListener: OnTrackClickListener) : RecyclerVie
     fun updateTracks(newTracks: ArrayList<Track>){
         tracks.clear()
         tracks.addAll(newTracks)
-        notifyDataSetChanged()
+        this.notifyDataSetChanged()
     }
 
     fun interface OnTrackClickListener{
