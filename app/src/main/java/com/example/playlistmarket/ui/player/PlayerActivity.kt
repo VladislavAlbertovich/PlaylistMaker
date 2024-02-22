@@ -2,7 +2,6 @@ package com.example.playlistmarket.ui.player
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmarket.R
@@ -10,24 +9,20 @@ import com.example.playlistmarket.databinding.ActivityPlayerBinding
 import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.presentation.player.PlayerViewModel
 import com.example.playlistmarket.ui.player.Model.PlayerScreenState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity() : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
-    private lateinit var playerViewModel: PlayerViewModel
+    private val playerViewModel by viewModel<PlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        playerViewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory()
-        )[PlayerViewModel::class.java]
 
         playerViewModel.observeTrack().observe(this){
             bind(it)

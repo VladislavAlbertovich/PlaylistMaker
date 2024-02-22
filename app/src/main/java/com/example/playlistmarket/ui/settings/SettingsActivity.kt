@@ -9,14 +9,15 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmarket.App
 import com.example.playlistmarket.R
 import com.example.playlistmarket.presentation.settings.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
+    private val viewModel by viewModel<SettingsViewModel>()
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +27,6 @@ class SettingsActivity : AppCompatActivity() {
         val buttonSupport = findViewById<LinearLayout>(R.id.buttonSupport)
         val buttonUserAgreement = findViewById<LinearLayout>(R.id.buttonUserAgreement)
         val themeSwitch = findViewById<SwitchMaterial>(R.id.themeSwitch)
-        val viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java]
         viewModel.observeLiveData().observe(this){
             themeSwitch.isChecked = it
         }

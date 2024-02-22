@@ -5,12 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmarket.App
-import com.example.playlistmarket.Creator
 import com.example.playlistmarket.data.player.impl.State
 import com.example.playlistmarket.domain.player.MediaPlayerUseCase
 import com.example.playlistmarket.domain.search.models.Track
@@ -36,13 +30,6 @@ class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCas
 
     companion object {
         private const val DELAY = 100L
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val playerUseCase = Creator.provideMediaPlayerUseCase()
-                val trackUseCase = Creator.provideTrackUseCase(this[APPLICATION_KEY] as App)
-                PlayerViewModel(playerUseCase, trackUseCase)
-            }
-        }
     }
 
     fun startUpdateTime() {

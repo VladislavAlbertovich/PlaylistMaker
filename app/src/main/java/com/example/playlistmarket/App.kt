@@ -5,6 +5,12 @@ import android.app.UiModeManager
 import android.content.SharedPreferences
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmarket.di.dataModule
+import com.example.playlistmarket.di.interactorModule
+import com.example.playlistmarket.di.repositoryModule
+import com.example.playlistmarket.di.viewModelModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 const val THEME_SHARED_PREFERENCE = "theme_shared_preference"
 const val THEME_SWITCH_KEY = "key_for_switch_theme"
@@ -15,6 +21,10 @@ class App : Application() {
     private lateinit var sharedPrefs: SharedPreferences
     override fun onCreate() {
         super.onCreate()
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        }
         sharedPrefs = getSharedPreferences(THEME_SHARED_PREFERENCE, MODE_PRIVATE)
         isDarkTheme = sharedPrefs.getBoolean(THEME_SWITCH_KEY, false)
         switchTheme(isDarkTheme)

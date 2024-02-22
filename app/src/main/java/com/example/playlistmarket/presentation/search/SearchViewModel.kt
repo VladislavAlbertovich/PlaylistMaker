@@ -5,12 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmarket.App
-import com.example.playlistmarket.Creator
 import com.example.playlistmarket.R
 import com.example.playlistmarket.domain.player.callbacks.TracksConsumer
 import com.example.playlistmarket.domain.resource_provider.ResourceProviderInteractor
@@ -38,16 +32,6 @@ class SearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 500L
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val findTracksUseCase = Creator.provideFindTracksUseCase(this[APPLICATION_KEY] as App)
-                val searchHistoryInteractor = Creator.provideSearchHistoryInteractor(this[APPLICATION_KEY] as App)
-                val trackUseCase = Creator.provideTrackUseCase(this[APPLICATION_KEY] as App)
-                val resourceProviderInteractor = Creator.provideResourceProviderInteractor(this[APPLICATION_KEY] as App)
-                SearchViewModel(findTracksUseCase, searchHistoryInteractor, trackUseCase, resourceProviderInteractor)
-            }
-        }
     }
 
     private val handler = Handler(Looper.getMainLooper())
