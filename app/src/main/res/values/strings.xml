@@ -31,4 +31,10 @@
     <string name="country">Страна</string>
     <string name="duration_value">0:00</string>
     <string name="album_value">Название альбома</string>
+    <string name="media_library">Медиатека</string>
+    <string name="media_library_empty">Ваша медиатека пуста</string>
+    <string name="new_playlist">Новый плейлист</string>
+    <string name="no_playlists_created">Вы не создали ни одного плейлиста</string>
+    <string name="favorite_tracks">Избранные треки</string>
+    <string name="playlists">Плейлисты</string>
 </resources>
