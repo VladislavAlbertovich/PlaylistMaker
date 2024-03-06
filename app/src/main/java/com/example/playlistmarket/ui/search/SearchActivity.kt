@@ -12,20 +12,20 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmarket.R
 import com.example.playlistmarket.databinding.ActivitySearchBinding
 import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.presentation.search.SearchViewModel
 import com.example.playlistmarket.ui.player.PlayerActivity
 import com.example.playlistmarket.ui.search.models.SearchState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historyTrackAdapter: TrackAdapter
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var searchViewModel: SearchViewModel
+    private val searchViewModel by viewModel<SearchViewModel>()
 
     private var lastTrackRequest: String = ""
     private var isClickAllowed = true
@@ -33,9 +33,6 @@ class SearchActivity : AppCompatActivity() {
     private var simpleTextWatcher: TextWatcher? = null
     @SuppressLint("MissingInflatedId", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        searchViewModel =
-            ViewModelProvider(this, SearchViewModel.getViewModelFactory())[SearchViewModel::class.java]
 
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
