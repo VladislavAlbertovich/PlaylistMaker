@@ -11,4 +11,9 @@ class SettingsViewModel(settingsInteractor: SettingsInteractor) : ViewModel() {
         settingsInteractor.getTheme()
     )
     fun observeLiveData(): LiveData<Boolean> = liveData
+
+    fun updateLiveData(newValue: Boolean){
+        liveData.postValue(newValue)
+    }
+
 }
