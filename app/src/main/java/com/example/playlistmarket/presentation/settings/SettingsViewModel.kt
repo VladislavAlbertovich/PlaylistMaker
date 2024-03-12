@@ -7,6 +7,7 @@ import com.example.playlistmarket.domain.settings.interactors.SettingsInteractor
 
 class SettingsViewModel(settingsInteractor: SettingsInteractor) : ViewModel() {
 
+
     private val liveData: MutableLiveData<Boolean> = MutableLiveData<Boolean>(
         settingsInteractor.getTheme()
     )
@@ -15,5 +16,4 @@ class SettingsViewModel(settingsInteractor: SettingsInteractor) : ViewModel() {
     fun updateLiveData(newValue: Boolean){
         liveData.postValue(newValue)
     }
-
 }
