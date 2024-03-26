@@ -8,32 +8,17 @@
     android:orientation="vertical"
     android:paddingEnd="@dimen/padding_16dp">
 
-    <LinearLayout
+
+    <TextView
+        style="@style/TitleStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_16dp"
-        android:paddingTop="@dimen/padding_14dp">
+        android:paddingTop="@dimen/padding_14dp"
+        android:text="@string/search"
+        android:textColor="@color/text_day_night_color"
+        tools:ignore="RtlSymmetry" />
 
-        <ImageButton
-            android:id="@+id/buttonBack"
-            android:layout_width="@dimen/iconSize"
-            android:layout_height="@dimen/iconSize"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:backgroundTint="@color/settings_search_background_color"
-            android:src="@drawable/arrowback"
-            app:tint="@color/text_day_night_color" />
-
-        <TextView
-            style="@style/TitleStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/_24dp"
-            android:text="@string/search"
-            android:textColor="@color/text_day_night_color"
-            tools:ignore="RtlSymmetry" />
-
-    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -66,7 +51,7 @@
             android:singleLine="true"
             android:textColorHighlight="@color/yp_blue"
             android:textCursorDrawable="@drawable/cursor_color"
-            tools:ignore="RtlSymmetry"></com.google.android.material.textfield.TextInputEditText>
+            tools:ignore="RtlSymmetry" />
 
         <ImageView
             android:id="@+id/clearButtonImageView"
@@ -81,13 +66,14 @@
 
     </FrameLayout>
 
-    <ProgressBar android:id="@+id/progressBar"
-        android:layout_marginTop="@dimen/_200dp"
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="@dimen/_44dp"
         android:layout_height="@dimen/_44dp"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_200dp"
         android:indeterminateTint="@color/yp_blue"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trackListRecyclerView"
@@ -157,8 +143,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/you_finded_text"
-            android:textSize="@dimen/_19sp"
-            android:textColor="@color/text_day_night_color"/>
+            android:textColor="@color/text_day_night_color"
+            android:textSize="@dimen/_19sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/history_recycler_view"

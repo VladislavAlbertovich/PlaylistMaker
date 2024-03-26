@@ -42,4 +42,6 @@
     <dimen name="_200dp">200dp</dimen>
     <dimen name="_44dp">44dp</dimen>
     <dimen name="_86dp">86dp</dimen>
+    <dimen name="_14dp">14dp</dimen>
+    <dimen name="_16dp">16dp</dimen>
 </resources>

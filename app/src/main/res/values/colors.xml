@@ -14,4 +14,6 @@
     <color name="search_background">@color/yp_light_gray</color>
     <color name="icon_color_day_night">@color/yp_text_gray</color>
     <color name="player_buttons_day_night">@color/yp_black</color>
+    <color name="buttons_on_bottom_navigation_menu_color">@color/yp_black</color>
+
 </resources>

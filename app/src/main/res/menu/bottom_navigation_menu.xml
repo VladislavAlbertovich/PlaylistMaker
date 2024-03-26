@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/searchFragment"
+        android:icon="@drawable/search"
+        android:iconTint="@color/buttons_on_bottom_navigation_menu_color"
+        android:title="@string/search" />
+
+    <item
+        android:id="@+id/mediaLibraryFragment"
+        android:icon="@drawable/library"
+        android:title="@string/medialibrary" />
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/settings"
+        android:title="@string/settings" />
+
+</menu>

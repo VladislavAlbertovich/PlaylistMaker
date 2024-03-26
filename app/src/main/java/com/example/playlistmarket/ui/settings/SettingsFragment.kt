@@ -1,42 +1,38 @@
 package com.example.playlistmarket.ui.settings
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.LinearLayout
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmarket.App
 import com.example.playlistmarket.R
+import com.example.playlistmarket.databinding.FragmentSettingsBinding
 import com.example.playlistmarket.presentation.settings.SettingsViewModel
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.example.playlistmarket.ui.BindingFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment: BindingFragment<FragmentSettingsBinding>() {
 
     private val viewModel by viewModel<SettingsViewModel>()
 
-    @SuppressLint("MissingInflatedId")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-        val buttonBack = findViewById<ImageButton>(R.id.buttonBack)
-        val buttonShareApp = findViewById<LinearLayout>(R.id.buttonShareApp)
-        val buttonSupport = findViewById<LinearLayout>(R.id.buttonSupport)
-        val buttonUserAgreement = findViewById<LinearLayout>(R.id.buttonUserAgreement)
-        val themeSwitch = findViewById<SwitchMaterial>(R.id.themeSwitch)
-        viewModel.observeLiveData().observe(this) {
-            themeSwitch.isChecked = it
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSettingsBinding {
+        return FragmentSettingsBinding.inflate(inflater)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.observeLiveData().observe(viewLifecycleOwner) {
+            binding.themeSwitch.isChecked = it
         }
 
-        buttonBack.setOnClickListener {
-            finish()
-        }
-
-        buttonShareApp.setOnClickListener {
+        binding.buttonShareApp.setOnClickListener {
             val shareText = getString(R.string.link_to_course)
             val sendIntent = Intent()
             sendIntent.apply {
@@ -44,10 +40,10 @@ class SettingsActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_TEXT, shareText)
                 type = "text/plain"
             }
-            startActivitySafe(sendIntent)
+            safeStartActivity(sendIntent)
         }
 
-        buttonSupport.setOnClickListener {
+        binding.buttonSupport.setOnClickListener {
             val supportIntent = Intent(Intent.ACTION_SENDTO)
             val subjectMessage = getString(R.string.message_to_developers_playlistmaker_app)
             val textMessage = getString(R.string.thank_message_to_developers)
@@ -57,27 +53,27 @@ class SettingsActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_SUBJECT, subjectMessage)
                 putExtra(Intent.EXTRA_TEXT, textMessage)
             }
-            startActivitySafe(supportIntent)
+            safeStartActivity(supportIntent)
         }
 
-        buttonUserAgreement.setOnClickListener {
+        binding.buttonUserAgreement.setOnClickListener {
             val url = Uri.parse(getString(R.string.link_to_user_agreement))
             val userAgreementIntent = Intent(Intent.ACTION_VIEW, url)
-            startActivitySafe(userAgreementIntent)
+            safeStartActivity(userAgreementIntent)
         }
 
-        themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateLiveData(isChecked)
-            (application as App).switchTheme(isChecked)
+            (requireActivity().application as App).switchTheme(isChecked)
         }
     }
 
-    private fun startActivitySafe(intent: Intent) {
+    private fun safeStartActivity(intent: Intent) {
         try {
             startActivity(intent)
         } catch (exception: ActivityNotFoundException) {
             val errorMessage = getString(R.string.error_app_message)
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
         }
     }
 }
