@@ -2,7 +2,9 @@ package com.example.playlistmarket.di
 
 import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
+import com.example.playlistmarket.THEME_SHARED_PREFERENCE
 import com.example.playlistmarket.data.search.SearchHistoryStorage
+import com.example.playlistmarket.data.search.impl.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
 import com.example.playlistmarket.data.search.local.SharedPreferencesSearchHistoryStorage
 import com.example.playlistmarket.data.search.network.ITunesSearchApi
 import com.example.playlistmarket.data.search.network.NetworkClient
@@ -33,7 +35,7 @@ val dataModule = module{
     //получаем RetrofitNetworkClient, который является зависимостью в SearchRepositoryImpl
     single<NetworkClient> { RetrofitNetworkClient(androidContext(), get()) }
 
-    single { androidContext().getSharedPreferences("TRACKS_HISTORY_SHARED_PREFERENCES_KEY", MODE_PRIVATE) }
+    single { androidContext().getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE) }
 
     factory { Gson() }
 
@@ -43,5 +45,6 @@ val dataModule = module{
     //player
     factory { MediaPlayer() }
     //settings
-    single(named("themeSharedPreference")) { androidContext().getSharedPreferences("THEME_SHARED_PREFERENCE", MODE_PRIVATE) }
+    single(named("themeSharedPreference")) { androidContext().getSharedPreferences(
+        THEME_SHARED_PREFERENCE, MODE_PRIVATE) }
 }

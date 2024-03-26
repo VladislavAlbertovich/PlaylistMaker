@@ -1,9 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".ui.media_library.MediaLibraryActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_16dp"
+        android:paddingTop="@dimen/padding_14dp">
+
+        <ImageView
+            android:id="@+id/buttonBack"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/iconSize"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/arrowback"
+            android:tint="@color/text_day_night_color"
+            tools:ignore="UseAppTint"/>
+
+        <TextView
+            style="@style/TitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/_24dp"
+            android:text="@string/media_library"
+            android:textColor="@color/text_day_night_color"
+            tools:ignore="RtlSymmetry" />
+
+    </LinearLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_16dp"
+        android:layout_marginTop="@dimen/padding_16dp"
+        android:layout_marginEnd="@dimen/padding_16dp"
+        app:tabIndicatorColor="@color/text_day_night_color"
+        app:tabIndicatorFullWidth="true"
+        app:tabSelectedTextColor="@color/text_day_night_color"
+        app:tabTextColor="@color/text_day_night_color" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/padding_16dp"
+        android:layout_marginEnd="@dimen/padding_16dp"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

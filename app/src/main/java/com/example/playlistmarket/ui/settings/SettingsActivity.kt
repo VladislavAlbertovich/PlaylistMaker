@@ -18,6 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SettingsActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<SettingsViewModel>()
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,7 @@ class SettingsActivity : AppCompatActivity() {
         val buttonSupport = findViewById<LinearLayout>(R.id.buttonSupport)
         val buttonUserAgreement = findViewById<LinearLayout>(R.id.buttonUserAgreement)
         val themeSwitch = findViewById<SwitchMaterial>(R.id.themeSwitch)
-        viewModel.observeLiveData().observe(this){
+        viewModel.observeLiveData().observe(this) {
             themeSwitch.isChecked = it
         }
 
@@ -66,6 +67,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.updateLiveData(isChecked)
             (application as App).switchTheme(isChecked)
         }
     }

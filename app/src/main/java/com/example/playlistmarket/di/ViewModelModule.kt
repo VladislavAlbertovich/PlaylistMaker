@@ -1,5 +1,7 @@
 package com.example.playlistmarket.di
 
+import com.example.playlistmarket.presentation.media_library.FavoriteTracksViewModel
+import com.example.playlistmarket.presentation.media_library.PlaylistsViewModel
 import com.example.playlistmarket.presentation.player.PlayerViewModel
 import com.example.playlistmarket.presentation.search.SearchViewModel
 import com.example.playlistmarket.presentation.settings.SettingsViewModel
@@ -15,5 +17,11 @@ val viewModelModule = module {
     }
     viewModel{
         SettingsViewModel(get())
+    }
+    viewModel{
+        FavoriteTracksViewModel(get())
+    }
+    viewModel{
+        PlaylistsViewModel(get())
     }
 }
