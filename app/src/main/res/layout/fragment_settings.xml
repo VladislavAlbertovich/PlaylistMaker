@@ -1,40 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingStart="@dimen/padding_16dp"
-    android:paddingEnd="12dp"
     android:background="@color/settings_search_background_color"
-    >
+    android:paddingStart="@dimen/padding_16dp"
+    android:paddingEnd="12dp">
 
-    <LinearLayout
+
+    <TextView
+        style="@style/TitleStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="14dp">
+        android:paddingTop="@dimen/_14dp"
+        android:text="@string/settings"
+        android:textColor="@color/text_day_night_color"
+        tools:ignore="RtlSymmetry" />
 
-        <ImageButton
-            android:id="@+id/buttonBack"
-            android:layout_width="@dimen/iconSize"
-            android:layout_height="@dimen/iconSize"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:backgroundTint="@color/settings_search_background_color"
-            android:src="@drawable/arrowback"
-            app:tint="@color/text_day_night_color" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings"
-            android:textColor="@color/text_day_night_color"
-            android:paddingStart="24dp"
-            style="@style/TitleStyle"
-            tools:ignore="RtlSymmetry" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,77 +26,74 @@
         android:gravity="end">
 
         <TextView
+            style="@style/TextOnSettingsActivityStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/Black_theme"
             android:layout_weight="1"
-            style="@style/TextOnSettingsActivityStyle"/>
+            android:text="@string/Black_theme" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/themeSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             style="@style/SwitcherStyle"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/buttonShareApp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_text_in_settings"
-        android:gravity="end"
-        android:id="@+id/buttonShareApp">
+        android:gravity="end">
 
         <TextView
+            style="@style/TextOnSettingsActivityStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/share_app"
-            style="@style/TextOnSettingsActivityStyle"/>
+            android:text="@string/share_app" />
 
         <ImageView
-            style="@style/IconsStyle"
             android:id="@+id/buttonShareAppIcon"
+            style="@style/IconsStyle"
             android:src="@drawable/share" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/buttonSupport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_text_in_settings"
-        android:gravity="end"
-        android:id="@+id/buttonSupport">
+        android:gravity="end">
 
         <TextView
+            style="@style/TextOnSettingsActivityStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/write_to_support"
-            style="@style/TextOnSettingsActivityStyle"
-             />
+            android:text="@string/write_to_support" />
 
         <ImageView
             style="@style/IconsStyle"
-            android:src="@drawable/support"
-            />
+            android:src="@drawable/support" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/buttonUserAgreement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_between_text_in_settings"
-        android:gravity="end"
-        android:id="@+id/buttonUserAgreement">
+        android:gravity="end">
 
         <TextView
+            style="@style/TextOnSettingsActivityStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/user_agreement"
-            style="@style/TextOnSettingsActivityStyle" />
+            android:text="@string/user_agreement" />
 
         <ImageView
             style="@style/IconsStyle"

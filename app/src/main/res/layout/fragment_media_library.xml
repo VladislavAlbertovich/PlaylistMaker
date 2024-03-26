@@ -1,38 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    tools:context=".ui.media_library.MediaLibraryActivity">
+    android:background="@color/settings_search_background_color"
 
-    <LinearLayout
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/TitleStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_16dp"
-        android:paddingTop="@dimen/padding_14dp">
-
-        <ImageView
-            android:id="@+id/buttonBack"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/iconSize"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:src="@drawable/arrowback"
-            android:tint="@color/text_day_night_color"
-            tools:ignore="UseAppTint"/>
-
-        <TextView
-            style="@style/TitleStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/_24dp"
-            android:text="@string/media_library"
-            android:textColor="@color/text_day_night_color"
-            tools:ignore="RtlSymmetry" />
-
-    </LinearLayout>
+        android:paddingStart="@dimen/_24dp"
+        android:paddingTop="@dimen/padding_14dp"
+        android:text="@string/media_library"
+        android:textColor="@color/text_day_night_color"
+        tools:ignore="RtlSymmetry" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
@@ -41,6 +26,7 @@
         android:layout_marginStart="@dimen/padding_16dp"
         android:layout_marginTop="@dimen/padding_16dp"
         android:layout_marginEnd="@dimen/padding_16dp"
+        android:background="@color/settings_search_background_color"
         app:tabIndicatorColor="@color/text_day_night_color"
         app:tabIndicatorFullWidth="true"
         app:tabSelectedTextColor="@color/text_day_night_color"
@@ -49,8 +35,8 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginStart="@dimen/padding_16dp"
-        android:layout_marginEnd="@dimen/padding_16dp"
-        android:layout_height="match_parent"/>
+        android:layout_marginEnd="@dimen/padding_16dp" />
 
 </LinearLayout>
