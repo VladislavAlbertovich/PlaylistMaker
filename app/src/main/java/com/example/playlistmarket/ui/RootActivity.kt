@@ -26,10 +26,12 @@ class RootActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.playerFragment -> {
+                    binding.screenSplitter.visibility = View.GONE
                     bottomNavigationView.visibility = View.GONE
                 }
 
                 else -> {
+                    binding.screenSplitter.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
                 }
 

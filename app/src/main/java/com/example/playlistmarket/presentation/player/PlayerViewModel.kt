@@ -13,7 +13,8 @@ import com.example.playlistmarket.ui.player.Model.PlayerScreenState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCase: TrackUseCase) : ViewModel() {
+class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCase: TrackUseCase) :
+    ViewModel() {
 
     private val mainThreadHandler = Handler(Looper.getMainLooper())
 
@@ -36,48 +37,58 @@ class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCas
         mainThreadHandler.post(updateTime())
     }
 
-    fun stopUpdateTime() {
-        mainThreadHandler.removeCallbacks(updateTime())
+    fun stopUpdateTimeAndPlayerState() {
+        mainThreadHandler.apply {
+            removeCallbacks(updateTime())
+            removeCallbacks(updatePlayerStateLiveData())
+        }
     }
 
     fun playbackControl() {
+        mainThreadHandler.post(updatePlayerStateLiveData())
         playerUseCase.playbackControl()
-        updateLiveData()
     }
+
     fun preparePlayer() {
         playerUseCase.preparePlayer(track)
     }
 
-    fun onPause() {
+    fun pausePlayer() {
         playerUseCase.pausePlayer()
-        stopUpdateTime()
+        stopUpdateTimeAndPlayerState()
     }
 
-    fun onReset() {
+    fun resetPlayer() {
         playerUseCase.onReset()
-        stopUpdateTime()
+        stopUpdateTimeAndPlayerState()
+
     }
 
-    fun onDestroy(){
-        stopUpdateTime()
+    fun onDestroy() {
+        stopUpdateTimeAndPlayerState()
     }
 
-    private fun updateLiveData() {
-        when (playerUseCase.getPlayerState()) {
-            State.DEFAULT -> {
-                playerStateLiveData.postValue(PlayerScreenState.Default)
-            }
+    private fun updatePlayerStateLiveData(): Runnable {
+        return object : Runnable {
+            override fun run() {
+                when (playerUseCase.getPlayerState()) {
+                    State.DEFAULT -> {
+                        playerStateLiveData.postValue(PlayerScreenState.Default)
+                    }
 
-            State.PREPARED -> {
-                playerStateLiveData.postValue(PlayerScreenState.Prepared)
-            }
+                    State.PREPARED -> {
+                        playerStateLiveData.postValue(PlayerScreenState.Prepared)
+                    }
 
-            State.PAUSED -> {
-                playerStateLiveData.postValue(PlayerScreenState.Paused)
-            }
+                    State.PAUSED -> {
+                        playerStateLiveData.postValue(PlayerScreenState.Paused)
+                    }
 
-            State.PLAYING -> {
-                playerStateLiveData.postValue(PlayerScreenState.Playing)
+                    State.PLAYING -> {
+                        playerStateLiveData.postValue(PlayerScreenState.Playing)
+                    }
+                }
+                mainThreadHandler.postDelayed(this, DELAY)
             }
         }
     }
@@ -85,16 +96,16 @@ class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCas
     private fun updateTime(): Runnable {
         return object : Runnable {
             override fun run() {
-                if (playerUseCase != null){
                 timeLiveData.postValue(
                     convertTime(
                         playerUseCase.getCurrentPosition()
                     )
                 )
                 mainThreadHandler.postDelayed(this, DELAY)
-            }}
+            }
         }
     }
+
     private fun convertTime(time: Int): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
     }

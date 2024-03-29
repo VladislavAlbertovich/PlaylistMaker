@@ -41,26 +41,28 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         searchViewModel.observeTracksHistory().observe(viewLifecycleOwner) {
-            if (it.isNotEmpty() && binding.searchInputEditText.hasFocus()) {
-                binding.searchHistoryViewgroup.visibility = View.VISIBLE
-            }
             historyTrackAdapter.updateTracks(it)
+            if (it.isNotEmpty()) {
+                binding.searchHistoryViewgroup.visibility = View.VISIBLE
+            } else {
+                binding.searchHistoryViewgroup.visibility = View.GONE
+            }
         }
+
         searchViewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
 
         historyTrackAdapter = TrackAdapter() {
             if (clickDebounce()) {
-                openPlayerActivity(it)
+                openPlayer(it)
             }
         }
         trackAdapter = TrackAdapter() {
             if (clickDebounce()) {
                 searchViewModel.updateHistoryAdapterTracks(it)
-                openPlayerActivity(it)
+                openPlayer(it)
             }
         }
 
@@ -117,6 +119,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                     if (lastTrackRequest.isNotEmpty()) {
                         searchViewModel.searchDebounce(binding.searchInputEditText.text.toString())
                     }
+                    hideKeyboard()
                     true
                 } else {
                     false
@@ -139,13 +142,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         super.onDestroyView()
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        if (savedInstanceState != null) {
-            binding.searchInputEditText.setText(savedInstanceState.getString(USER_INPUT))
-        }
-    }
-
     private fun clearButtonAndSearchHistoryGroupVisibility(s: CharSequence?) {
         if (s.isNullOrEmpty()) {
             binding.clearButtonImageView.visibility = View.GONE
@@ -160,7 +156,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
-    private fun openPlayerActivity(track: Track) {
+    private fun openPlayer(track: Track) {
         searchViewModel.provideTrack(track)
         findNavController().navigate(R.id.action_searchFragment_to_playerFragment)
     }
@@ -190,7 +186,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.placeholderAdditionalMessage.visibility = View.GONE
         binding.placeholderImage.visibility = View.GONE
         binding.updateButton.visibility = View.GONE
-        hideKeyboard()
     }
 
     private fun showContent(tracks: ArrayList<Track>) {

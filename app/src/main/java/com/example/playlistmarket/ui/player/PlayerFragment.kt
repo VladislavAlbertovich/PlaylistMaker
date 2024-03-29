@@ -45,13 +45,13 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
                 is PlayerScreenState.Prepared -> {
                     binding.playButton.isEnabled = true
                     binding.playButton.setImageResource(R.drawable.play_button)
-                    binding.timeFragmentTextview.text = "00:00"
-                    playerViewModel.stopUpdateTime()
+                    playerViewModel.stopUpdateTimeAndPlayerState()
                 }
 
                 is PlayerScreenState.Playing -> {
                     binding.playButton.setImageResource(R.drawable.pause_button)
                     playerViewModel.startUpdateTime()
+
                     playerViewModel.observeTime().observe(viewLifecycleOwner) {
                         binding.timeFragmentTextview.text = it
                     }
@@ -60,7 +60,7 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
         }
 
         binding.buttonBack.setOnClickListener {
-            findNavController().navigate(R.id.action_playerFragment_to_searchFragment)
+            findNavController().navigateUp()
         }
 
         binding.playButton.setOnClickListener {
@@ -70,13 +70,13 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
 
     override fun onResume() {
         super.onResume()
-        playerViewModel.onReset()
+        playerViewModel.resetPlayer()
         playerViewModel.preparePlayer()
     }
 
     override fun onPause() {
         super.onPause()
-        playerViewModel.onPause()
+        playerViewModel.pausePlayer()
     }
 
     override fun onDestroyView() {
@@ -90,7 +90,7 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
             artistName.text = track.artistName
             durationValueTextView.text =
                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-            if (track.collectionName.isNullOrEmpty()) {
+            if (track.collectionName.isNotEmpty()) {
                 binding.albumValueTextView.text = track.collectionName
             } else {
                 binding.albumValueTextView.text = "-"

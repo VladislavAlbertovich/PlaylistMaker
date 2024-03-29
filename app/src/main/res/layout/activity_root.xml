@@ -16,11 +16,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+
+    <ImageView
+        android:id="@+id/screen_splitter"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1dp"
+        android:src="@color/white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+         />
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_60dp"
         android:splitMotionEvents="false"
+        app:itemPaddingTop="@dimen/_10dp"
+        app:itemPaddingBottom="@dimen/_15dp"
         app:backgroundTint="@color/settings_search_background_color"
         app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView"
         app:itemIconTint="@color/navigation_color"
