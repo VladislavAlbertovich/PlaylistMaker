@@ -17,15 +17,15 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
 
-    <ImageView
+    <View
         android:id="@+id/screen_splitter"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_1dp"
-        android:src="@color/white"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/screen_splitter_color"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-         />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"

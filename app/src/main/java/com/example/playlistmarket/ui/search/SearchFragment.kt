@@ -1,6 +1,5 @@
 package com.example.playlistmarket.ui.search
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -104,14 +103,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.searchInputEditText.let {
             it.requestFocus()
-
-            it.postDelayed(object : Runnable {
-                override fun run() {
-                    val inputMethodManager =
-                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
-                }
-            }, 1000)
             it.addTextChangedListener(simpleTextWatcher)
             it.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -138,7 +129,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     override fun onDestroyView() {
         simpleTextWatcher?.let { binding.searchInputEditText.removeTextChangedListener(it) }
         searchViewModel.onDestroy()
-
         super.onDestroyView()
     }
 
@@ -171,7 +161,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     }
 
     private fun clickDebounce(): Boolean {
-        var current = isClickAllowed
+        val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
             handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
@@ -230,7 +220,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     }
 
     companion object {
-        const val USER_INPUT = "USER_INPUT"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
