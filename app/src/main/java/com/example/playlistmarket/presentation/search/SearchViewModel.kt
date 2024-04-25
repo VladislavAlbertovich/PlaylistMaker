@@ -50,6 +50,9 @@ class SearchViewModel(
     }
 
     fun searchDebounce(textRequest: String) {
+        if (lastSearchText == textRequest){
+            return
+        }
         lastSearchText = textRequest
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
@@ -71,9 +74,11 @@ class SearchViewModel(
 
     private fun search(newSearchText: String) {
 
-        lastSearchText = newSearchText
+        if (newSearchText.isNotEmpty()) {
+            lastSearchText = newSearchText
 
-        renderState(SearchState(ArrayList(), true, "", ""))
+            renderState(SearchState(ArrayList(), true, "", ""))
+        }
 
         findTracksUseCase.findTracks(newSearchText, object : TracksConsumer {
             override fun consume(tracks: List<Track>?, message: String?) {

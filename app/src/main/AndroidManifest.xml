@@ -16,21 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.PlaylistMarket"
         tools:targetApi="31">
+
         <activity
-            android:name=".ui.player.PlayerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.search.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.media_library.MediaLibraryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:exported="true">
+            android:name=".ui.RootActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

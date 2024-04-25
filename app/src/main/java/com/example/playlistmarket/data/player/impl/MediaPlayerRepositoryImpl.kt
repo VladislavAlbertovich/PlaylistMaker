@@ -28,6 +28,7 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
         }
         mediaPlayer.setOnCompletionListener {
             playerState = State.PREPARED
+            mediaPlayer.seekTo(0)
         }
     }
 
@@ -45,7 +46,8 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
     }
 
     override fun getCurrentPosition(): Int {
-        return mediaPlayer.currentPosition
+           return mediaPlayer.currentPosition
+
     }
 
     override fun getPlayerState() = playerState

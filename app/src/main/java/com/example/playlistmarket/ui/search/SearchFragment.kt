@@ -1,63 +1,67 @@
 package com.example.playlistmarket.ui.search
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmarket.R
-import com.example.playlistmarket.databinding.ActivitySearchBinding
+import com.example.playlistmarket.databinding.FragmentSearchBinding
 import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.presentation.search.SearchViewModel
-import com.example.playlistmarket.ui.player.PlayerActivity
+import com.example.playlistmarket.ui.BindingFragment
 import com.example.playlistmarket.ui.search.models.SearchState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historyTrackAdapter: TrackAdapter
-    private lateinit var binding: ActivitySearchBinding
     private val searchViewModel by viewModel<SearchViewModel>()
 
     private var lastTrackRequest: String = ""
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
     private var simpleTextWatcher: TextWatcher? = null
-    @SuppressLint("MissingInflatedId", "SuspiciousIndentation")
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSearchBinding {
+        return FragmentSearchBinding.inflate(inflater)
+    }
 
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        searchViewModel.observeTracksHistory().observe(this){
-            if (it.isNotEmpty()&& binding.searchInputEditText.hasFocus()){
-                binding.searchHistoryViewgroup.visibility = View.VISIBLE
-            }
+        searchViewModel.observeTracksHistory().observe(viewLifecycleOwner) {
             historyTrackAdapter.updateTracks(it)
+            if (it.isNotEmpty()) {
+                binding.searchHistoryViewgroup.visibility = View.VISIBLE
+            } else {
+                binding.searchHistoryViewgroup.visibility = View.GONE
+            }
         }
 
-        searchViewModel.observeState().observe(this){
+        searchViewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
 
         historyTrackAdapter = TrackAdapter() {
             if (clickDebounce()) {
-                openPlayerActivity(it)
+                openPlayer(it)
             }
         }
         trackAdapter = TrackAdapter() {
             if (clickDebounce()) {
                 searchViewModel.updateHistoryAdapterTracks(it)
-                openPlayerActivity(it)
+                openPlayer(it)
             }
         }
 
@@ -83,10 +87,6 @@ class SearchActivity : AppCompatActivity() {
         binding.trackListRecyclerView.adapter = trackAdapter
         binding.historyRecyclerView.adapter = historyTrackAdapter
 
-        binding.buttonBack.setOnClickListener {
-            finish()
-        }
-
         binding.clearButtonImageView.setOnClickListener {
             binding.searchInputEditText.setText("")
             trackAdapter.updateTracks(ArrayList())
@@ -103,14 +103,6 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchInputEditText.let {
             it.requestFocus()
-
-            it.postDelayed(object : Runnable {
-                override fun run() {
-                    val inputMethodManager =
-                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
-                }
-            }, 1000)
             it.addTextChangedListener(simpleTextWatcher)
             it.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -118,12 +110,12 @@ class SearchActivity : AppCompatActivity() {
                     if (lastTrackRequest.isNotEmpty()) {
                         searchViewModel.searchDebounce(binding.searchInputEditText.text.toString())
                     }
+                    hideKeyboard()
                     true
                 } else {
                     false
                 }
             }
-
         }
 
         binding.updateButton.setOnClickListener {
@@ -134,20 +126,10 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         simpleTextWatcher?.let { binding.searchInputEditText.removeTextChangedListener(it) }
         searchViewModel.onDestroy()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(USER_INPUT, binding.searchInputEditText.text.toString())
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        binding.searchInputEditText.setText(savedInstanceState.getString(USER_INPUT))
+        super.onDestroyView()
     }
 
     private fun clearButtonAndSearchHistoryGroupVisibility(s: CharSequence?) {
@@ -163,23 +145,23 @@ class SearchActivity : AppCompatActivity() {
             binding.searchHistoryViewgroup.visibility = View.GONE
         }
     }
-    private fun openPlayerActivity(track: Track) {
+
+    private fun openPlayer(track: Track) {
         searchViewModel.provideTrack(track)
-        val intentPlayerActivity = Intent(this, PlayerActivity::class.java)
-        startActivity(intentPlayerActivity)
+        findNavController().navigate(R.id.action_searchFragment_to_playerFragment)
     }
 
     private fun hideKeyboard() {
-        val view: View? = this.currentFocus
+        val view: View? = requireActivity().currentFocus
         if (view != null) {
             val inputMethodManager =
-                getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0)
         }
     }
 
     private fun clickDebounce(): Boolean {
-        var current = isClickAllowed
+        val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
             handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
@@ -188,13 +170,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showLoading() {
-        binding.progressBar.visibility= View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
         binding.trackListRecyclerView.visibility = View.GONE
         binding.placeholderText.visibility = View.GONE
         binding.placeholderAdditionalMessage.visibility = View.GONE
         binding.placeholderImage.visibility = View.GONE
         binding.updateButton.visibility = View.GONE
-        hideKeyboard()
     }
 
     private fun showContent(tracks: ArrayList<Track>) {
@@ -213,7 +194,7 @@ class SearchActivity : AppCompatActivity() {
         binding.placeholderText.text = errorMessage
         binding.placeholderAdditionalMessage.visibility = View.VISIBLE
         binding.placeholderAdditionalMessage.text = additionalMessage
-        binding.placeholderImage.setImageDrawable(getDrawable(R.drawable.connection_problems))
+        binding.placeholderImage.setImageDrawable(requireActivity().getDrawable(R.drawable.connection_problems))
     }
 
     private fun showNothingFoundMessage(emptyMessage: String) {
@@ -222,7 +203,7 @@ class SearchActivity : AppCompatActivity() {
         binding.placeholderImage.visibility = View.VISIBLE
         trackAdapter.updateTracks(ArrayList())
         binding.placeholderText.text = emptyMessage
-        binding.placeholderImage.setImageDrawable(getDrawable(R.drawable.nothing_was_found))
+        binding.placeholderImage.setImageDrawable(requireActivity().getDrawable(R.drawable.nothing_was_found))
     }
 
     private fun render(state: SearchState) {
@@ -232,13 +213,13 @@ class SearchActivity : AppCompatActivity() {
                 state.errorMessage,
                 state.additionalMessage
             )
+
             state.tracks.isNotEmpty() -> showContent(state.tracks)
             else -> showNothingFoundMessage(state.errorMessage)
         }
     }
+
     companion object {
-        const val USER_INPUT = "USER_INPUT"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
-
