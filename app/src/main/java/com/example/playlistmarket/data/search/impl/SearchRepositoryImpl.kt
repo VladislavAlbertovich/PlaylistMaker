@@ -8,13 +8,15 @@ import com.example.playlistmarket.data.search.network.OK_REQUEST
 import com.example.playlistmarket.domain.search.SearchRepository
 import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.utils.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class SearchRepositoryImpl(private val networkClient: NetworkClient) : SearchRepository {
-    override fun findTracks(expression: String): Resource<List<Track>> {
+    override fun findTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(ITunesSearchRequest(expression))
-        return when(response.result){
-            NO_INTERNET -> Resource.Error("Загрузка не удалась. Проверьте подключение к интернету")
-            OK_REQUEST -> Resource.Success((response as ITunesSearchResponse).tracks.map{
+        when(response.result){
+            NO_INTERNET -> emit(Resource.Error("Загрузка не удалась. Проверьте подключение к интернету"))
+            OK_REQUEST -> emit(Resource.Success((response as ITunesSearchResponse).tracks.map{
                 Track(
                     previewUrl = it.previewUrl,
                     trackName = it.trackName,
@@ -27,8 +29,8 @@ class SearchRepositoryImpl(private val networkClient: NetworkClient) : SearchRep
                     primaryGenreName = it.primaryGenreName,
                     country = it.country
                 )
-            })
-            else -> Resource.Error("Проблемы со связью")
+            }))
+            else -> emit(Resource.Error("Проблемы со связью"))
         }
     }
 }

@@ -5,22 +5,31 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.playlistmarket.data.search.dto.ITunesSearchRequest
 import com.example.playlistmarket.data.search.dto.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 const val BAD_REQUEST_STATUS_CODE = 400
 const val NO_INTERNET = -1
 const val OK_REQUEST = 200
+const val INTERNAL_SERVER_ERROR = 500
 class RetrofitNetworkClient(private val context: Context, private val iTunesSearchApi: ITunesSearchApi) : NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (!isConnected()){
             return Response().apply { result = NO_INTERNET }
         }
-        return if (dto is ITunesSearchRequest) {
-            val resp = iTunesSearchApi.getTracks(dto.expression).execute()
-            val body = resp.body() ?: Response()
-            body.apply { result = resp.code() }
-        } else {
-            Response().apply { result = BAD_REQUEST_STATUS_CODE }
+        return withContext(Dispatchers.IO) {
+            if (dto is ITunesSearchRequest) {
+                try {
+                    val resp = iTunesSearchApi.getTracks(dto.expression)
+                    resp.apply { result = OK_REQUEST }
+                } catch (e: Throwable){
+                    Response().apply { result = INTERNAL_SERVER_ERROR }
+                }
+
+            } else {
+                Response().apply { result = BAD_REQUEST_STATUS_CODE }
+            }
         }
     }
 
