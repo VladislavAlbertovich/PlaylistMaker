@@ -1,18 +1,18 @@
 package com.example.playlistmarket.domain.search.interactors
 
-import com.example.playlistmarket.domain.player.callbacks.TracksConsumer
 import com.example.playlistmarket.domain.search.SearchRepository
+import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.utils.Resource
-import java.util.concurrent.Executors
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class FindTracksUseCaseImpl(private val searchRepository: SearchRepository) : FindTracksUseCase {
 
-    private val executor = Executors.newCachedThreadPool()
-    override fun findTracks(expression: String, consumer: TracksConsumer) {
-        executor.execute {
-            when (val tracks = searchRepository.findTracks(expression)) {
-                is Resource.Error -> consumer.consume(null, tracks.message)
-                is Resource.Success -> consumer.consume(tracks.data, null)
+    override fun findTracks(expression: String): Flow<Pair<List<Track>?, String?>> {
+        return searchRepository.findTracks(expression).map { resourceListTrack ->
+            when(resourceListTrack) {
+                is Resource.Error -> Pair(null, resourceListTrack.message)
+                is Resource.Success -> Pair(resourceListTrack.data, null)
             }
         }
     }

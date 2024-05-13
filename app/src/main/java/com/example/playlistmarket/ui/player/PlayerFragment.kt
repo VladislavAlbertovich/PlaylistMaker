@@ -37,6 +37,8 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
             when (state) {
                 is PlayerScreenState.Paused -> {
                     binding.playButton.setImageResource(R.drawable.play_button)
+                    binding.timeFragmentTextview.text = state.progress
+                    playerViewModel.stopUpdatePlayerState()
                 }
 
                 is PlayerScreenState.Default -> {
@@ -45,16 +47,14 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
                 is PlayerScreenState.Prepared -> {
                     binding.playButton.isEnabled = true
                     binding.playButton.setImageResource(R.drawable.play_button)
-                    playerViewModel.stopUpdateTimeAndPlayerState()
+                    binding.timeFragmentTextview.text = state.progress
+                    playerViewModel.stopUpdatePlayerState()
                 }
 
                 is PlayerScreenState.Playing -> {
                     binding.playButton.setImageResource(R.drawable.pause_button)
-                    playerViewModel.startUpdateTime()
+                    binding.timeFragmentTextview.text = state.progress
 
-                    playerViewModel.observeTime().observe(viewLifecycleOwner) {
-                        binding.timeFragmentTextview.text = it
-                    }
                 }
             }
         }
@@ -68,12 +68,6 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        playerViewModel.resetPlayer()
-        playerViewModel.preparePlayer()
-    }
-
     override fun onPause() {
         super.onPause()
         playerViewModel.pausePlayer()
@@ -81,7 +75,7 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        playerViewModel.onDestroy()
+        playerViewModel.resetPlayer()
     }
 
     private fun bind(track: Track) {

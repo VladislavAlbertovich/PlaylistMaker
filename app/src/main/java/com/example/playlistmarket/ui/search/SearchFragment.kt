@@ -1,8 +1,6 @@
 package com.example.playlistmarket.ui.search
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -11,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmarket.R
 import com.example.playlistmarket.databinding.FragmentSearchBinding
@@ -18,6 +17,7 @@ import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.presentation.search.SearchViewModel
 import com.example.playlistmarket.ui.BindingFragment
 import com.example.playlistmarket.ui.search.models.SearchState
+import com.example.playlistmarket.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
@@ -27,9 +27,8 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private val searchViewModel by viewModel<SearchViewModel>()
 
     private var lastTrackRequest: String = ""
-    private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
     private var simpleTextWatcher: TextWatcher? = null
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -40,13 +39,34 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        searchViewModel.observeTracksHistory().observe(viewLifecycleOwner) {
-            historyTrackAdapter.updateTracks(it)
-            if (it.isNotEmpty()) {
+        onTrackClickDebounce =
+            debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+                openPlayer(track)
+            }
+
+        searchViewModel.observeTracksHistory().observe(viewLifecycleOwner) { historyTracks ->
+            historyTrackAdapter.updateTracks(historyTracks)
+            if (historyTracks.isNotEmpty()) {
                 binding.searchHistoryViewgroup.visibility = View.VISIBLE
             } else {
                 binding.searchHistoryViewgroup.visibility = View.GONE
             }
+            binding.clearButtonImageView.setOnClickListener {
+                binding.searchInputEditText.setText("")
+                trackAdapter.updateTracks(ArrayList())
+                hideKeyboard()
+                binding.placeholderImage.visibility = View.GONE
+                binding.placeholderText.visibility = View.GONE
+                binding.placeholderAdditionalMessage.visibility = View.GONE
+                if (historyTracks.isNotEmpty()) {
+                    binding.searchHistoryViewgroup.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        binding.clearHistoryButton.setOnClickListener {
+            binding.searchHistoryViewgroup.visibility = View.GONE
+            searchViewModel.clearHistory()
         }
 
         searchViewModel.observeState().observe(viewLifecycleOwner) {
@@ -54,15 +74,11 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
 
         historyTrackAdapter = TrackAdapter() {
-            if (clickDebounce()) {
-                openPlayer(it)
-            }
+            onTrackClickDebounce(it)
         }
         trackAdapter = TrackAdapter() {
-            if (clickDebounce()) {
-                searchViewModel.updateHistoryAdapterTracks(it)
-                openPlayer(it)
-            }
+            onTrackClickDebounce(it)
+            searchViewModel.updateHistoryAdapterTracks(it)
         }
 
         simpleTextWatcher = object : TextWatcher {
@@ -86,20 +102,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.trackListRecyclerView.adapter = trackAdapter
         binding.historyRecyclerView.adapter = historyTrackAdapter
-
-        binding.clearButtonImageView.setOnClickListener {
-            binding.searchInputEditText.setText("")
-            trackAdapter.updateTracks(ArrayList())
-            hideKeyboard()
-            binding.placeholderImage.visibility = View.GONE
-            binding.placeholderText.visibility = View.GONE
-            binding.placeholderAdditionalMessage.visibility = View.GONE
-        }
-
-        binding.clearHistoryButton.setOnClickListener {
-            binding.searchHistoryViewgroup.visibility = View.GONE
-            searchViewModel.clearHistory()
-        }
 
         binding.searchInputEditText.let {
             it.requestFocus()
@@ -128,7 +130,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     override fun onDestroyView() {
         simpleTextWatcher?.let { binding.searchInputEditText.removeTextChangedListener(it) }
-        searchViewModel.onDestroy()
         super.onDestroyView()
     }
 
@@ -138,7 +139,11 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             binding.placeholderImage.visibility = View.GONE
             binding.placeholderText.visibility = View.GONE
             binding.placeholderAdditionalMessage.visibility = View.GONE
-            binding.searchHistoryViewgroup.visibility = View.VISIBLE
+            searchViewModel.observeTracksHistory().observe(viewLifecycleOwner) {
+                if (!it.isNullOrEmpty()) {
+                    binding.searchHistoryViewgroup.visibility = View.VISIBLE
+                }
+            }
 
         } else {
             binding.clearButtonImageView.visibility = View.VISIBLE
@@ -160,15 +165,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
     private fun showLoading() {
         binding.progressBar.visibility = View.VISIBLE
         binding.trackListRecyclerView.visibility = View.GONE
@@ -178,7 +174,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.updateButton.visibility = View.GONE
     }
 
-    private fun showContent(tracks: ArrayList<Track>) {
+    private fun showContent(tracks: List<Track>) {
         if (lastTrackRequest.isNotEmpty()) {
             binding.progressBar.visibility = View.GONE
             trackAdapter.updateTracks(tracks)

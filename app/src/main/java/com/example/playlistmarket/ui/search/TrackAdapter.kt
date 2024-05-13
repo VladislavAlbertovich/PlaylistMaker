@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmarket.R
 import com.example.playlistmarket.domain.search.models.Track
 
-class TrackAdapter(val onTrackClickListener: OnTrackClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val onTrackClickListener: OnTrackClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
 
     private val tracks: ArrayList<Track> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
@@ -26,7 +26,8 @@ class TrackAdapter(val onTrackClickListener: OnTrackClickListener) : RecyclerVie
         holder.itemView.setOnClickListener{ onTrackClickListener.onTrackClick(tracks[position])}
     }
     @SuppressLint("NotifyDataSetChanged")
-    fun updateTracks(newTracks: ArrayList<Track>){
+    fun updateTracks(newTracks: List<Track>){
+
         tracks.clear()
         tracks.addAll(newTracks)
         this.notifyDataSetChanged()
