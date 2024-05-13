@@ -2,7 +2,10 @@ package com.example.playlistmarket.di
 
 import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.example.playlistmarket.THEME_SHARED_PREFERENCE
+import com.example.playlistmarket.data.converters.MediaLibraryDatabaseConverter
+import com.example.playlistmarket.data.db.MediaLibraryDatabase
 import com.example.playlistmarket.data.search.SearchHistoryStorage
 import com.example.playlistmarket.data.search.impl.TRACKS_HISTORY_SHARED_PREFERENCES_KEY
 import com.example.playlistmarket.data.search.local.SharedPreferencesSearchHistoryStorage
@@ -18,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 // модуль для получения SharedPreferences, Api сервиса, Gson'а, RetrofitNetworkClient, MediaPlayer
 
-val dataModule = module{
+val dataModule = module {
 
     //Search
 
@@ -35,16 +38,36 @@ val dataModule = module{
     //получаем RetrofitNetworkClient, который является зависимостью в SearchRepositoryImpl
     single<NetworkClient> { RetrofitNetworkClient(androidContext(), get()) }
 
-    single { androidContext().getSharedPreferences(TRACKS_HISTORY_SHARED_PREFERENCES_KEY, MODE_PRIVATE) }
+    single {
+        androidContext().getSharedPreferences(
+            TRACKS_HISTORY_SHARED_PREFERENCES_KEY,
+            MODE_PRIVATE
+        )
+    }
 
     factory { Gson() }
 
     //получаем SearchHistoryStorage, который является зависимостью в SearchHistoryRepository
-    single <SearchHistoryStorage>{ SharedPreferencesSearchHistoryStorage(get(), get())}
+    single<SearchHistoryStorage> { SharedPreferencesSearchHistoryStorage(get(), get(), get()) }
 
     //player
     factory { MediaPlayer() }
     //settings
-    single(named("themeSharedPreference")) { androidContext().getSharedPreferences(
-        THEME_SHARED_PREFERENCE, MODE_PRIVATE) }
+    single(named("themeSharedPreference")) {
+        androidContext().getSharedPreferences(
+            THEME_SHARED_PREFERENCE, MODE_PRIVATE
+        )
+    }
+    //база данных
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            MediaLibraryDatabase::class.java,
+            "media_library.database"
+        ).build()
+    }
+    //конвертер
+    single {
+        MediaLibraryDatabaseConverter()
+    }
 }

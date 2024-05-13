@@ -1,10 +1,11 @@
 package com.example.playlistmarket.domain.search.interactors
 
 import com.example.playlistmarket.domain.search.models.Track
+import kotlinx.coroutines.flow.Flow
 
 interface SearchHistoryInteractor {
 
-    fun addTrackToSearchHistory(newTrack: Track)
+    suspend fun addTrackToSearchHistory(newTrack: Track)
     fun clearTracksFromSearchHistory()
-    fun getTracksFromSearchHistory(): ArrayList<Track>
+    suspend fun getTracksFromSearchHistory(): Flow<ArrayList<Track>>
 }

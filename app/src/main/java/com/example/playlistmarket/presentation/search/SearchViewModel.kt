@@ -11,6 +11,7 @@ import com.example.playlistmarket.domain.search.interactors.SearchHistoryInterac
 import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.domain.track.TrackUseCase
 import com.example.playlistmarket.ui.search.models.SearchState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -23,18 +24,15 @@ class SearchViewModel(
 
     private val stateLiveData = MutableLiveData<SearchState>()
     private val tracksHistoryLiveData = MutableLiveData<ArrayList<Track>>()
+    private var searchJob: Job? = null
     fun observeState(): LiveData<SearchState> = stateLiveData
     fun observeTracksHistory(): LiveData<ArrayList<Track>> = tracksHistoryLiveData
-
-    init {
-        tracksHistoryLiveData.postValue(getTracksFromHistory())
-    }
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 500L
     }
 
-    private var lastSearchText: String? = null
+    private var lastSearchText: String = ""
 
     fun searchDebounce(textRequest: String) {
         if (lastSearchText == textRequest) {
@@ -43,9 +41,11 @@ class SearchViewModel(
 
         lastSearchText = textRequest
 
+        searchJob?.cancel()
+
         viewModelScope.launch {
             delay(SEARCH_DEBOUNCE_DELAY)
-            val newSearchText = lastSearchText?: ""
+            val newSearchText = lastSearchText
             search(newSearchText)
         }
     }
@@ -56,23 +56,19 @@ class SearchViewModel(
 
     fun clearHistory() {
         searchHistoryInteractor.clearTracksFromSearchHistory()
-        tracksHistoryLiveData.postValue(getTracksFromHistory())
     }
 
-    fun updateHistoryAdapterTracks(track: Track) {
+    suspend fun updateHistoryAdapterTracks(track: Track) {
         searchHistoryInteractor.addTrackToSearchHistory(track)
-        tracksHistoryLiveData.postValue(getTracksFromHistory())
     }
 
     private fun search(newSearchText: String) {
 
         if (newSearchText.isNotEmpty()) {
             lastSearchText = newSearchText
-
-
             renderState(SearchState(ArrayList(), true, "", ""))
         }
-        viewModelScope.launch {
+        searchJob = viewModelScope.launch {
             findTracksUseCase.findTracks(newSearchText)
                 .collect {
                     processResult(it.first, it.second)
@@ -80,13 +76,22 @@ class SearchViewModel(
         }
     }
 
-    private fun getTracksFromHistory() =
-        searchHistoryInteractor.getTracksFromSearchHistory()
+    fun updateState() {
+        viewModelScope.launch {
+            if (lastSearchText.isNotEmpty()) {
+                findTracksUseCase.findTracks(lastSearchText).collect {
+                    processResult(it.first, it.second)
+                }
+            }
+            searchHistoryInteractor.getTracksFromSearchHistory().collect {
+                tracksHistoryLiveData.postValue(it)
+            }
+        }
+    }
 
     private fun renderState(state: SearchState) {
         stateLiveData.postValue(state)
     }
-
 
     private fun processResult(tracks: List<Track>?, message: String?) {
         when {
@@ -105,7 +110,7 @@ class SearchViewModel(
                 )
             }
 
-            else ->  renderState(
+            else -> renderState(
                 SearchState(
                     ArrayList(),
                     false,
