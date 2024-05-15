@@ -18,7 +18,7 @@ class SharedPreferencesSearchHistoryStorage(
 
     override suspend fun addTrackToSearchHistory(newTrack: Track) {
         val historySearchTracks = ArrayList<Track>()
-        getTracksFromSearchHistory().collect{
+        getTracksFromSearchHistory().collect {
             historySearchTracks.addAll(it)
         }
         historySearchTracks.removeAll { it.trackId == newTrack.trackId }
@@ -44,35 +44,19 @@ class SharedPreferencesSearchHistoryStorage(
             tracks.addAll(extractTracksFromJson(jsonTracks))
         }
         val checkedIsFavoriteTracks = tracks.map { track ->
-            if (isFavorite(track)) {
-                Track(
-                    track.previewUrl,
-                    track.trackName,
-                    track.artistName,
-                    track.trackTimeMillis,
-                    track.artworkUrl100,
-                    track.trackId,
-                    track.collectionName,
-                    track.releaseDate,
-                    track.primaryGenreName,
-                    track.country,
-                    true
-                )
-            } else {
-                Track(
-                    track.previewUrl,
-                    track.trackName,
-                    track.artistName,
-                    track.trackTimeMillis,
-                    track.artworkUrl100,
-                    track.trackId,
-                    track.collectionName,
-                    track.releaseDate,
-                    track.primaryGenreName,
-                    track.country,
-                    false
-                )
-            }
+            Track(
+                previewUrl = track.previewUrl,
+                trackName = track.trackName,
+                artistName = track.artistName,
+                trackTimeMillis = track.trackTimeMillis,
+                artworkUrl100 = track.artworkUrl100,
+                trackId = track.trackId,
+                collectionName = track.collectionName,
+                releaseDate = track.releaseDate,
+                primaryGenreName = track.primaryGenreName,
+                country = track.country,
+                isFavorite = (isFavorite(track))
+            )
         }
         emit(ArrayList(checkedIsFavoriteTracks))
     }

@@ -11,15 +11,24 @@ import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.domain.track.TrackUseCase
 import kotlinx.coroutines.launch
 
-class FavoriteTracksViewModel(private val mediaLibraryInteractor: MediaLibraryInteractor, private val resourceProviderInteractor: ResourceProviderInteractor, private val trackUseCase: TrackUseCase): ViewModel() {
+class FavoriteTracksViewModel(
+    private val mediaLibraryInteractor: MediaLibraryInteractor,
+    private val resourceProviderInteractor: ResourceProviderInteractor,
+    private val trackUseCase: TrackUseCase
+) : ViewModel() {
 
     private val favoriteTracksStateLiveData = MutableLiveData<FavoriteTracksState>()
     fun observeFavoriteTracksState(): LiveData<FavoriteTracksState> = favoriteTracksStateLiveData
 
-    private fun processResult(tracks:List<Track>) {
-        if (tracks.isEmpty()){
-            favoriteTracksStateLiveData.postValue(FavoriteTracksState.Empty(resourceProviderInteractor.getString(
-                R.string.media_library_empty)))
+    private fun processResult(tracks: List<Track>) {
+        if (tracks.isEmpty()) {
+            favoriteTracksStateLiveData.postValue(
+                FavoriteTracksState.Empty(
+                    resourceProviderInteractor.getString(
+                        R.string.media_library_empty
+                    )
+                )
+            )
         } else {
             favoriteTracksStateLiveData.postValue(FavoriteTracksState.Content(tracks))
         }
@@ -29,9 +38,9 @@ class FavoriteTracksViewModel(private val mediaLibraryInteractor: MediaLibraryIn
         trackUseCase.addTrackToSharedPreferences(track)
     }
 
-    fun fillData(){
+    fun fillData() {
         viewModelScope.launch {
-            mediaLibraryInteractor.favoriteTracks().collect{
+            mediaLibraryInteractor.favoriteTracks().collect {
                 processResult(it)
             }
         }

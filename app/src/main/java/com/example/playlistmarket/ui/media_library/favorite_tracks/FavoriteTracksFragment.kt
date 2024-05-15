@@ -27,14 +27,6 @@ class FavoriteTracksFragment : BindingFragment<FragmentFavoriteTracksBinding>() 
     private lateinit var adapter: FavoriteTrackAdapter
     private lateinit var onTrackClickDebounce: (Track) -> Unit
 
-    companion object {
-
-        private const val CLICK_DEBOUNCE_DELAY = 100L
-        fun newInstance(): FavoriteTracksFragment {
-            return FavoriteTracksFragment()
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -83,5 +75,12 @@ class FavoriteTracksFragment : BindingFragment<FragmentFavoriteTracksBinding>() 
     override fun onResume() {
         super.onResume()
         favoriteTracksViewModel.fillData()
+    }
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 100L
+        fun newInstance(): FavoriteTracksFragment {
+            return FavoriteTracksFragment()
+        }
     }
 }

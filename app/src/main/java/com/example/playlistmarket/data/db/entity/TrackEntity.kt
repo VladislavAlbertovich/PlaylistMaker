@@ -10,13 +10,13 @@ import java.util.Date
 @Entity(tableName = "favorite_tracks")
 @TypeConverters(DateConverter::class)
 data class TrackEntity(
+    @PrimaryKey @ColumnInfo(name = "track_id")
+    val trackId: Int,
     val previewUrl: String,
     val trackName: String,
     val artistName: String,
     val trackTimeMillis: Long,
     val artworkUrl100: String,
-    @PrimaryKey @ColumnInfo(name = "track_id")
-    val trackId: Int,
     val collectionName: String,
     val releaseDate: Date,
     val primaryGenreName: String,
