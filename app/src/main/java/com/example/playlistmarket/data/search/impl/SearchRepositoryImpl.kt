@@ -1,7 +1,9 @@
 package com.example.playlistmarket.data.search.impl
 
+import com.example.playlistmarket.data.db.MediaLibraryDatabase
 import com.example.playlistmarket.data.search.dto.ITunesSearchRequest
 import com.example.playlistmarket.data.search.dto.ITunesSearchResponse
+import com.example.playlistmarket.data.search.dto.TrackDTO
 import com.example.playlistmarket.data.search.network.NO_INTERNET
 import com.example.playlistmarket.data.search.network.NetworkClient
 import com.example.playlistmarket.data.search.network.OK_REQUEST
@@ -11,12 +13,15 @@ import com.example.playlistmarket.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class SearchRepositoryImpl(private val networkClient: NetworkClient) : SearchRepository {
+class SearchRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val database: MediaLibraryDatabase
+) : SearchRepository {
     override fun findTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(ITunesSearchRequest(expression))
-        when(response.result){
+        when (response.result) {
             NO_INTERNET -> emit(Resource.Error("Загрузка не удалась. Проверьте подключение к интернету"))
-            OK_REQUEST -> emit(Resource.Success((response as ITunesSearchResponse).tracks.map{
+            OK_REQUEST -> emit(Resource.Success((response as ITunesSearchResponse).tracks.map {
                 Track(
                     previewUrl = it.previewUrl,
                     trackName = it.trackName,
@@ -27,10 +32,22 @@ class SearchRepositoryImpl(private val networkClient: NetworkClient) : SearchRep
                     collectionName = it.collectionName,
                     releaseDate = it.releaseDate,
                     primaryGenreName = it.primaryGenreName,
-                    country = it.country
+                    country = it.country,
+                    isFavorite = (isFavorite(it))
                 )
             }))
             else -> emit(Resource.Error("Проблемы со связью"))
         }
+    }
+
+    private suspend fun isFavorite(trackDto: TrackDTO): Boolean {
+        var isFavorite = false
+        val favoriteTracksIds = database.trackDao().getFavoritesTracksIds()
+        favoriteTracksIds.forEach { favoriteTrackId ->
+            if (favoriteTrackId == trackDto.trackId) {
+                isFavorite = true
+            }
+        }
+        return isFavorite
     }
 }

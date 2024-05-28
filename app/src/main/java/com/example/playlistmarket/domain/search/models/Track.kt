@@ -12,7 +12,8 @@ data class Track(
     val collectionName: String,
     val releaseDate: Date,
     val primaryGenreName: String,
-    val country: String
+    val country: String,
+    var isFavorite: Boolean = false
 ) {
     fun artworkUrl512() = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 

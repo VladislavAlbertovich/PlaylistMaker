@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -13,6 +14,7 @@ import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.presentation.player.PlayerViewModel
 import com.example.playlistmarket.ui.BindingFragment
 import com.example.playlistmarket.ui.player.Model.PlayerScreenState
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -29,8 +31,17 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        playerViewModel.observeTrack().observe(viewLifecycleOwner) {
-            bind(it)
+        playerViewModel.observeTrack().observe(viewLifecycleOwner) { track ->
+            bind(track)
+
+        }
+
+        playerViewModel.observeIsFavorite().observe(viewLifecycleOwner){ isFavorite ->
+            if (isFavorite){
+                binding.likeButton.setImageResource(R.drawable.pressed_like_button)
+            } else {
+                binding.likeButton.setImageResource(R.drawable.unpressed_like_button)
+            }
         }
 
         playerViewModel.observePlayerScreenState().observe(viewLifecycleOwner) { state ->
@@ -66,6 +77,11 @@ class PlayerFragment : BindingFragment<FragmentPlayerBinding>() {
         binding.playButton.setOnClickListener {
             playerViewModel.playbackControl()
         }
+
+        binding.likeButton.setOnClickListener {
+            lifecycleScope.launch {playerViewModel.onFavoriteClicked()}
+        }
+
     }
 
     override fun onPause() {

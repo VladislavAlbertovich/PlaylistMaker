@@ -13,13 +13,13 @@ val viewModelModule = module {
         SearchViewModel(get(), get(), get(), get())
     }
     viewModel{
-        PlayerViewModel(get(), get())
+        PlayerViewModel(get(), get(), get())
     }
     viewModel{
         SettingsViewModel(get())
     }
     viewModel{
-        FavoriteTracksViewModel(get())
+        FavoriteTracksViewModel(get(), get(), get())
     }
     viewModel{
         PlaylistsViewModel(get())

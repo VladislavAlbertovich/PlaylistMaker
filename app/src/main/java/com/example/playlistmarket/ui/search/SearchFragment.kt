@@ -1,5 +1,6 @@
 package com.example.playlistmarket.ui.search
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,6 +19,7 @@ import com.example.playlistmarket.presentation.search.SearchViewModel
 import com.example.playlistmarket.ui.BindingFragment
 import com.example.playlistmarket.ui.search.models.SearchState
 import com.example.playlistmarket.utils.debounce
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : BindingFragment<FragmentSearchBinding>() {
@@ -66,7 +68,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.clearHistoryButton.setOnClickListener {
             binding.searchHistoryViewgroup.visibility = View.GONE
-            searchViewModel.clearHistory()
+            lifecycleScope.launch { searchViewModel.clearHistory() }
         }
 
         searchViewModel.observeState().observe(viewLifecycleOwner) {
@@ -78,7 +80,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
         trackAdapter = TrackAdapter() {
             onTrackClickDebounce(it)
-            searchViewModel.updateHistoryAdapterTracks(it)
+            lifecycleScope.launch { searchViewModel.updateHistoryAdapterTracks(it) }
         }
 
         simpleTextWatcher = object : TextWatcher {
@@ -128,6 +130,10 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        searchViewModel.updateState()
+    }
     override fun onDestroyView() {
         simpleTextWatcher?.let { binding.searchInputEditText.removeTextChangedListener(it) }
         super.onDestroyView()
@@ -182,6 +188,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun showError(errorMessage: String, additionalMessage: String) {
         binding.progressBar.visibility = View.GONE
         binding.placeholderText.visibility = View.VISIBLE
@@ -193,6 +200,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.placeholderImage.setImageDrawable(requireActivity().getDrawable(R.drawable.connection_problems))
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun showNothingFoundMessage(emptyMessage: String) {
         binding.progressBar.visibility = View.GONE
         binding.placeholderText.visibility = View.VISIBLE

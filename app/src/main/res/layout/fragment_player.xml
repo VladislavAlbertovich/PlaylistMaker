@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_29dp"
         android:background="@color/settings_search_background_color"
-        android:src="@drawable/like_button"
+        android:src="@drawable/unpressed_like_button"
         app:layout_constraintBottom_toTopOf="@id/time_fragment_textview"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintStart_toEndOf="@id/play_button" />

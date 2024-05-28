@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmarket.data.player.impl.State
+import com.example.playlistmarket.domain.media_library.interactors.MediaLibraryInteractor
 import com.example.playlistmarket.domain.player.MediaPlayerUseCase
 import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.domain.track.TrackUseCase
@@ -15,7 +16,11 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCase: TrackUseCase) :
+class PlayerViewModel(
+    private val playerUseCase: MediaPlayerUseCase,
+    trackUseCase: TrackUseCase,
+    private val mediaLibraryInteractor: MediaLibraryInteractor
+) :
     ViewModel() {
 
     private val track = trackUseCase.execute()
@@ -24,7 +29,6 @@ class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCas
         preparePlayer(track)
     }
 
-
     private val playerStateLiveData =
         MutableLiveData<PlayerScreenState>(PlayerScreenState.Default())
 
@@ -32,6 +36,9 @@ class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCas
 
     private val trackLiveData = MutableLiveData(track)
     fun observeTrack(): LiveData<Track> = trackLiveData
+
+    private val isFavoriteLiveData = MutableLiveData(track.isFavorite)
+    fun observeIsFavorite(): LiveData<Boolean> = isFavoriteLiveData
 
     private var stateJob: Job? = null
 
@@ -48,10 +55,6 @@ class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCas
         playerUseCase.playbackControl()
     }
 
-    private fun preparePlayer(track: Track) {
-        playerUseCase.preparePlayer(track)
-    }
-
     fun pausePlayer() {
         playerUseCase.pausePlayer()
         stopUpdatePlayerState()
@@ -60,6 +63,18 @@ class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCas
     fun resetPlayer() {
         playerUseCase.onReset()
         stopUpdatePlayerState()
+    }
+
+    suspend fun onFavoriteClicked() {
+        if (track.isFavorite) {
+            mediaLibraryInteractor.removeTrackFromFavorites(track)
+            track.isFavorite = false
+            isFavoriteLiveData.postValue(track.isFavorite)
+        } else {
+            mediaLibraryInteractor.addTrackToFavorites(track)
+            track.isFavorite = true
+            isFavoriteLiveData.postValue(track.isFavorite)
+        }
     }
 
     private fun updatePlayerStateLiveData() {
@@ -97,6 +112,9 @@ class PlayerViewModel(private val playerUseCase: MediaPlayerUseCase, trackUseCas
         }
     }
 
+    private fun preparePlayer(track: Track) {
+        playerUseCase.preparePlayer(track)
+    }
 
     private fun convertTime(time: Int): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)

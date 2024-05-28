@@ -1,12 +1,12 @@
 package com.example.playlistmarket.domain.search.interactors
 
-import android.content.SharedPreferences
 import com.example.playlistmarket.domain.search.SearchHistoryRepository
 import com.example.playlistmarket.domain.search.models.Track
+import kotlinx.coroutines.flow.Flow
 
 class SearchHistoryInteractorImpl(private val searchHistoryRepository: SearchHistoryRepository) :
     SearchHistoryInteractor {
-    override fun addTrackToSearchHistory(newTrack: Track) {
+    override suspend fun addTrackToSearchHistory(newTrack: Track) {
         searchHistoryRepository.addTrackToSearchHistory(newTrack)
     }
 
@@ -14,9 +14,7 @@ class SearchHistoryInteractorImpl(private val searchHistoryRepository: SearchHis
         searchHistoryRepository.clearTracksFromSearchHistory()
     }
 
-    override fun getTracksFromSearchHistory(): ArrayList<Track> {
+    override suspend fun getTracksFromSearchHistory(): Flow<ArrayList<Track>>{
         return searchHistoryRepository.getTracksFromSearchHistory()
     }
-
-
 }

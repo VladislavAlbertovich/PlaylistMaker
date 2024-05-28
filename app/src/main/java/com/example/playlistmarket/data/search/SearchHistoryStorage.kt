@@ -1,9 +1,10 @@
 package com.example.playlistmarket.data.search
 
 import com.example.playlistmarket.domain.search.models.Track
+import kotlinx.coroutines.flow.Flow
 
 interface SearchHistoryStorage {
-    fun addTrackToSearchHistory(newTrack: Track)
+    suspend fun addTrackToSearchHistory(newTrack: Track)
     fun clearTracksFromSearchHistory()
-    fun getTracksFromSearchHistory(): ArrayList<Track>
+    suspend fun getTracksFromSearchHistory(): Flow<ArrayList<Track>>
 }

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <Button
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/trackListRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_13dp"
         android:layout_marginTop="@dimen/_24dp"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:id="@+id/new_playlist_button"
+        style="@style/UpdateButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:text="@string/new_playlist"
+        android:visibility="visible"/>
+
 
     <ImageView
         app:layout_constraintTop_toTopOf="parent"
@@ -32,9 +32,9 @@
         android:visibility="gone" />
 
     <TextView
+        app:layout_constraintTop_toBottomOf="@id/placeholder_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/placeholder_image"
         android:id="@+id/placeholder_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +44,6 @@
         android:textColor="@color/text_day_night_color"
         android:textSize="@dimen/_19sp"
         android:visibility="gone"
-        android:text="@string/media_library_empty" />
+        android:text="@string/no_playlists_created" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
