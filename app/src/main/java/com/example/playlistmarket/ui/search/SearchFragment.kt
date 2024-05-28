@@ -100,7 +100,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                 clearButtonAndSearchHistoryGroupVisibility(s)
             }
         }
-        simpleTextWatcher?.let { binding.searchInputEditText.addTextChangedListener(it) }
 
         binding.trackListRecyclerView.adapter = trackAdapter
         binding.historyRecyclerView.adapter = historyTrackAdapter

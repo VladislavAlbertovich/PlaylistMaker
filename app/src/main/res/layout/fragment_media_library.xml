@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/settings_search_background_color"
+    android:background="@color/background_color"
 
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -26,7 +26,7 @@
         android:layout_marginStart="@dimen/padding_16dp"
         android:layout_marginTop="@dimen/padding_16dp"
         android:layout_marginEnd="@dimen/padding_16dp"
-        android:background="@color/settings_search_background_color"
+        android:background="@color/background_color"
         app:tabIndicatorColor="@color/text_day_night_color"
         app:tabIndicatorFullWidth="true"
         app:tabSelectedTextColor="@color/text_day_night_color"

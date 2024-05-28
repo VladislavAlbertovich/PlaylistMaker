@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/new_playlist_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_14dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/buttonBack"
+            android:layout_width="@dimen/_24dp"
+            android:layout_height="@dimen/_24dp"
+            android:layout_marginStart="@dimen/padding_16dp"
+            android:background="@color/background_color"
+            android:src="@drawable/arrowback"
+            app:tint="@color/text_day_night_color" />
+
+        <TextView
+            style="@style/TitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20dp"
+            android:text="@string/new_playlist"
+            android:textColor="@color/text_day_night_color" />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="@dimen/_0dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginTop="@dimen/_52dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_marginBottom="@dimen/_30dp"
+        app:cardCornerRadius="@dimen/_8dp"
+        app:cardElevation="@dimen/_0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/new_playlist_layout"
+        app:layout_constraintBottom_toTopOf="@id/playlist_name_layout">
+
+        <ImageButton
+            android:src="@drawable/add_image_button"
+            android:id="@+id/cover_place"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/dotted_frame"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/new_playlist_layout"
+            app:layout_constraintBottom_toTopOf="@id/playlist_name_layout"
+            android:clipToOutline="true"
+            tools:targetApi="s" />
+
+    </androidx.cardview.widget.CardView>
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/playlist_name_layout"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:layout_marginBottom="@dimen/_8dp"
+        app:layout_constraintBottom_toTopOf="@id/playlist_description_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/yp_blue"
+        android:hint="@string/title"
+        app:hintTextColor="@color/yp_blue">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/playlist_title_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            app:hintAnimationEnabled="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/playlist_description_layout"
+        android:layout_width="@dimen/_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_130dp"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        app:layout_constraintBottom_toTopOf="@id/create_playlist_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/yp_blue"
+        android:hint="@string/description"
+        app:hintTextColor="@color/yp_blue">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/playlist_description_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            app:hintAnimationEnabled="true"
+            android:ellipsize="end"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/create_playlist_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_20dp"
+        android:layout_marginStart="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_20dp"
+        android:padding="@dimen/_12dp"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:textSize="@dimen/_16sp"
+        android:text="@string/create"
+        android:enabled="false"
+        android:textColor="@color/white"
+        android:background="@drawable/rectangle_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

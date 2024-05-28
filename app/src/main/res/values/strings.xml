@@ -37,4 +37,12 @@
     <string name="no_playlists_created">Вы не создали ни одного плейлиста</string>
     <string name="favorite_tracks">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
+    <string name="description">Описание</string>
+    <string name="title">Название*</string>
+    <string name="create">Создать</string>
+    <string name="playlist_title">Название плейлиста</string>
+    <string name="tracksCount">Количество треков</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
+    <string name="the_track_has_already_been_added_to_the_playlist">Трек уже добавлен в плейлист [ %1$s ]</string>
+    <string name="added_to_playlist">Добавлено в плейлист [ %1$s ]</string>
 </resources>
