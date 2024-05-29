@@ -71,6 +71,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/playlist_name_layout"
+        style="@style/CustomOutlineBox"
+        android:textColorHint="@color/text_day_night_color"
         android:layout_width="@dimen/_0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_20dp"
@@ -81,12 +83,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:boxBackgroundMode="outline"
-        app:boxStrokeColor="@color/yp_blue"
+        app:boxStrokeColor="@color/text_input_layout_stroke_color"
+        app:boxStrokeWidth="@dimen/_2dp"
         android:hint="@string/title"
         app:hintTextColor="@color/yp_blue">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/playlist_title_edit_text"
+            android:textColorHint="@color/text_day_night_color"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -104,12 +108,13 @@
         android:layout_marginBottom="@dimen/_130dp"
         android:layout_marginStart="@dimen/_20dp"
         android:layout_marginEnd="@dimen/_20dp"
+        android:textColorHint="@color/text_day_night_color"
         app:layout_constraintBottom_toTopOf="@id/create_playlist_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:boxBackgroundMode="outline"
-        app:boxStrokeColor="@color/yp_blue"
+        app:boxStrokeColor="@color/text_input_layout_stroke_color"
         android:hint="@string/description"
         app:hintTextColor="@color/yp_blue">
 
@@ -118,6 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
+            android:textColorHint="@color/text_day_night_color"
             app:hintAnimationEnabled="true"
             android:ellipsize="end"
             android:maxLines="1" />

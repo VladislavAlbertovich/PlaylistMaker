@@ -84,4 +84,10 @@
         <item name="android:clickable">true</item>
         <item name="android:backgroundTint">@color/yp_blue</item>
     </style>
+
+    <style name="Theme.TestInputEditText" parent="Base.Theme.PlaylistMarket" />
+
+    <style name="CustomOutlineBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/text_input_layout_stroke_color</item>
+    </style>
 </resources>
