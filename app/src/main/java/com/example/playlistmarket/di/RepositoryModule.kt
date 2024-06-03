@@ -1,6 +1,7 @@
 package com.example.playlistmarket.di
 
 import com.example.playlistmarket.data.media_library.MediaLibraryRepositoryImpl
+import com.example.playlistmarket.data.media_library.PlaylistRepositoryImpl
 import com.example.playlistmarket.data.player.impl.MediaPlayerRepositoryImpl
 import com.example.playlistmarket.data.resource_provider.ResourceProviderRepositoryImpl
 import com.example.playlistmarket.data.search.impl.SearchHistoryRepositoryImpl
@@ -8,6 +9,7 @@ import com.example.playlistmarket.data.search.impl.SearchRepositoryImpl
 import com.example.playlistmarket.data.settings.SettingsRepositoryImpl
 import com.example.playlistmarket.data.track.impl.HistoryTrackRepositoryImpl
 import com.example.playlistmarket.domain.media_library.MediaLibraryRepository
+import com.example.playlistmarket.domain.media_library.PlaylistRepository
 import com.example.playlistmarket.domain.player.MediaPlayerRepository
 import com.example.playlistmarket.domain.resource_provider.ResourceProviderRepository
 import com.example.playlistmarket.domain.search.SearchHistoryRepository
@@ -31,4 +33,5 @@ val repositoryModule = module {
     //Player
     single<MediaPlayerRepository> { MediaPlayerRepositoryImpl(get()) }
     single<MediaLibraryRepository> { MediaLibraryRepositoryImpl(get(), get()) }
+    single<PlaylistRepository> { PlaylistRepositoryImpl(get(), get(), get()) }
 }

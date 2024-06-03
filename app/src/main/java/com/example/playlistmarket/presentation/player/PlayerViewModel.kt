@@ -6,10 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmarket.data.player.impl.State
 import com.example.playlistmarket.domain.media_library.interactors.MediaLibraryInteractor
+import com.example.playlistmarket.domain.media_library.interactors.PlaylistsInteractor
+import com.example.playlistmarket.domain.media_library.models.Playlist
 import com.example.playlistmarket.domain.player.MediaPlayerUseCase
 import com.example.playlistmarket.domain.search.models.Track
 import com.example.playlistmarket.domain.track.TrackUseCase
 import com.example.playlistmarket.ui.player.Model.PlayerScreenState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,7 +22,8 @@ import java.util.Locale
 class PlayerViewModel(
     private val playerUseCase: MediaPlayerUseCase,
     trackUseCase: TrackUseCase,
-    private val mediaLibraryInteractor: MediaLibraryInteractor
+    private val mediaLibraryInteractor: MediaLibraryInteractor,
+    private val playlistsInteractor: PlaylistsInteractor
 ) :
     ViewModel() {
 
@@ -39,6 +43,12 @@ class PlayerViewModel(
 
     private val isFavoriteLiveData = MutableLiveData(track.isFavorite)
     fun observeIsFavorite(): LiveData<Boolean> = isFavoriteLiveData
+
+    private val playlists = MutableLiveData<List<Playlist>>()
+    fun observePlaylists(): LiveData<List<Playlist>> = playlists
+
+    private val trackAddingState = MutableLiveData<TrackAddingState>()
+    fun observeTrackAddingStatus(): LiveData<TrackAddingState> = trackAddingState
 
     private var stateJob: Job? = null
 
@@ -118,5 +128,45 @@ class PlayerViewModel(
 
     private fun convertTime(time: Int): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
+    }
+
+    fun getPlaylistsFromLibrary() {
+        viewModelScope.launch {
+            playlistsInteractor.getPlaylistsFromLibrary()
+                .collect { itemList -> playlists.postValue(itemList)}
+        }
+    }
+
+    private fun checkTrackContains(track: Track, playlist: Playlist): Boolean {
+        return playlistsInteractor.checkTrackContains(track, playlist)
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        if (checkTrackContains(track, playlist)) {
+            trackAddingState.postValue(TrackAddingState.NotDone(playlist))
+        } else {
+            addTrackToSaved(track)
+            updatePlaylistAndReload(track, playlist)
+            trackAddingState.postValue(TrackAddingState.Done(playlist))
+        }
+    }
+
+    private fun addTrackToSaved(track: Track) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor.addTrackToSaved(track)
+        }
+    }
+
+    private fun updatePlaylistAndReload(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            updatePlaylist(track, playlist)
+            getPlaylistsFromLibrary()
+        }
+    }
+
+    private fun updatePlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            playlistsInteractor.updatePlaylist(track, playlist)
+        }
     }
 }

@@ -33,7 +33,7 @@
         android:splitMotionEvents="false"
         app:itemPaddingTop="@dimen/_10dp"
         app:itemPaddingBottom="@dimen/_15dp"
-        app:backgroundTint="@color/settings_search_background_color"
+        app:backgroundTint="@color/background_color"
         app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView"
         app:itemIconTint="@color/navigation_color"
         app:itemTextColor="@color/navigation_color"

@@ -2,6 +2,8 @@ package com.example.playlistmarket.di
 
 import com.example.playlistmarket.domain.media_library.interactors.MediaLibraryInteractor
 import com.example.playlistmarket.domain.media_library.interactors.MediaLibraryInteractorImpl
+import com.example.playlistmarket.domain.media_library.interactors.PlaylistsInteractor
+import com.example.playlistmarket.domain.media_library.interactors.PlaylistsInteractorImpl
 import com.example.playlistmarket.domain.player.MediaPlayerUseCase
 import com.example.playlistmarket.domain.player.impl.MediaPlayerUseCaseImpl
 import com.example.playlistmarket.domain.resource_provider.ResourceProviderInteractor
@@ -30,4 +32,6 @@ val interactorModule = module {
     single<SettingsInteractor> { SettingsInteractorImpl(get()) }
     //MediaLibraryInteractor
     single<MediaLibraryInteractor> { MediaLibraryInteractorImpl(get()) }
+
+    single<PlaylistsInteractor> { PlaylistsInteractorImpl(get()) }
 }

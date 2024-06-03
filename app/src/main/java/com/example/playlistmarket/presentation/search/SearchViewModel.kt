@@ -46,7 +46,9 @@ class SearchViewModel(
         viewModelScope.launch {
             delay(SEARCH_DEBOUNCE_DELAY)
             val newSearchText = lastSearchText
-            search(newSearchText)
+            if (newSearchText.isNotEmpty()) {
+                search(newSearchText)
+            }
         }
     }
 
@@ -62,7 +64,7 @@ class SearchViewModel(
         searchHistoryInteractor.addTrackToSearchHistory(track)
     }
 
-    private fun search(newSearchText: String) {
+    fun search(newSearchText: String) {
 
         if (newSearchText.isNotEmpty()) {
             lastSearchText = newSearchText
@@ -95,7 +97,7 @@ class SearchViewModel(
 
     private fun processResult(tracks: List<Track>?, message: String?) {
         when {
-            tracks != null -> {
+            !tracks.isNullOrEmpty() -> {
                 renderState(SearchState(tracks, false, "", ""))
             }
 

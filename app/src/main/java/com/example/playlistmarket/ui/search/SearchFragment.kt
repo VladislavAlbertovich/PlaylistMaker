@@ -50,6 +50,10 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             historyTrackAdapter.updateTracks(historyTracks)
             if (historyTracks.isNotEmpty()) {
                 binding.searchHistoryViewgroup.visibility = View.VISIBLE
+                binding.placeholderImage.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
+                binding.placeholderText.visibility = View.GONE
+                binding.updateButton.visibility = View.GONE
             } else {
                 binding.searchHistoryViewgroup.visibility = View.GONE
             }
@@ -57,9 +61,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                 binding.searchInputEditText.setText("")
                 trackAdapter.updateTracks(ArrayList())
                 hideKeyboard()
-                binding.placeholderImage.visibility = View.GONE
-                binding.placeholderText.visibility = View.GONE
-                binding.placeholderAdditionalMessage.visibility = View.GONE
                 if (historyTracks.isNotEmpty()) {
                     binding.searchHistoryViewgroup.visibility = View.VISIBLE
                 }
@@ -100,7 +101,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                 clearButtonAndSearchHistoryGroupVisibility(s)
             }
         }
-        simpleTextWatcher?.let { binding.searchInputEditText.addTextChangedListener(it) }
 
         binding.trackListRecyclerView.adapter = trackAdapter
         binding.historyRecyclerView.adapter = historyTrackAdapter
@@ -123,7 +123,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
 
         binding.updateButton.setOnClickListener {
-            searchViewModel.searchDebounce(lastTrackRequest)
+            searchViewModel.search(lastTrackRequest)
             if (binding.searchInputEditText.text?.isNotEmpty() == true) {
                 binding.clearButtonImageView.visibility = View.VISIBLE
             }
@@ -145,6 +145,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
             binding.placeholderImage.visibility = View.GONE
             binding.placeholderText.visibility = View.GONE
             binding.placeholderAdditionalMessage.visibility = View.GONE
+            binding.updateButton.visibility = View.GONE
             searchViewModel.observeTracksHistory().observe(viewLifecycleOwner) {
                 if (!it.isNullOrEmpty()) {
                     binding.searchHistoryViewgroup.visibility = View.VISIBLE
@@ -181,8 +182,8 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     }
 
     private fun showContent(tracks: List<Track>) {
+        binding.progressBar.visibility = View.GONE
         if (lastTrackRequest.isNotEmpty()) {
-            binding.progressBar.visibility = View.GONE
             trackAdapter.updateTracks(tracks)
             binding.trackListRecyclerView.visibility = View.VISIBLE
         }
@@ -198,6 +199,8 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         binding.placeholderAdditionalMessage.visibility = View.VISIBLE
         binding.placeholderAdditionalMessage.text = additionalMessage
         binding.placeholderImage.setImageDrawable(requireActivity().getDrawable(R.drawable.connection_problems))
+        binding.updateButton.visibility = View.VISIBLE
+        binding.searchHistoryViewgroup.visibility = View.GONE
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -208,6 +211,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         trackAdapter.updateTracks(ArrayList())
         binding.placeholderText.text = emptyMessage
         binding.placeholderImage.setImageDrawable(requireActivity().getDrawable(R.drawable.nothing_was_found))
+        binding.searchHistoryViewgroup.visibility = View.GONE
     }
 
     private fun render(state: SearchState) {

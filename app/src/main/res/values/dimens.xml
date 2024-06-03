@@ -48,4 +48,9 @@
     <dimen name="_60dp">60dp</dimen>
     <dimen name="_10dp">10dp</dimen>
     <dimen name="_15dp">15dp</dimen>
+    <dimen name="_100dp">100dp</dimen>
+    <dimen name="_52dp">52dp</dimen>
+    <dimen name="_130dp">130dp</dimen>
+    <dimen name="_12sp">12sp</dimen>
+    <dimen name="_500dp">500dp</dimen>
 </resources>
