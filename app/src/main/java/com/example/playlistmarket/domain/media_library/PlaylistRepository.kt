@@ -12,4 +12,9 @@ interface PlaylistRepository {
     suspend fun updatePlaylist(track: Track, playlist: Playlist)
     suspend fun addTrackToSaved(track: Track)
     fun checkTrackContains(track: Track, playlist: Playlist): Boolean
+    fun getTracksFromPlaylist(tracksIds: String): Flow<List<Track>>
+    suspend fun sharePlaylist(playlistId: Int)
+    suspend fun editPlaylist(id: Int, title: String, description: String, cover: Uri?)
+    suspend fun removePlaylist(playlistId: Int?)
+    suspend fun removeTrackFromPlaylist(track: Track, playlistId: Int)
 }

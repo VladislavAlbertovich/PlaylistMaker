@@ -53,4 +53,8 @@
     <dimen name="_130dp">130dp</dimen>
     <dimen name="_12sp">12sp</dimen>
     <dimen name="_500dp">500dp</dimen>
+    <dimen name="_24sp">24sp</dimen>
+    <dimen name="_18sp">18sp</dimen>
+    <dimen name="_383dp">383dp</dimen>
+    <dimen name="_11sp">11sp</dimen>
 </resources>

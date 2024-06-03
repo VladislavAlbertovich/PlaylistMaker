@@ -11,6 +11,10 @@ class PlaylistsInteractorImpl(private val repository: PlaylistRepository) : Play
         repository.createPlaylist(name, description, cover)
     }
 
+    override suspend fun editPlaylist(id: Int, title: String, description: String, cover: Uri?) {
+        repository.editPlaylist(id, title, description, cover)
+    }
+
     override fun getPlaylistFromLibrary(id: Int): Flow<Playlist> {
         return repository.getPlaylistFromLibrary(id)
     }
@@ -29,4 +33,20 @@ class PlaylistsInteractorImpl(private val repository: PlaylistRepository) : Play
 
     override fun checkTrackContains(track: Track, playlist: Playlist): Boolean {
         return repository.checkTrackContains(track, playlist)    }
+
+    override fun getTracksFromPlaylist(tracksIds: String): Flow<List<Track>> {
+        return repository.getTracksFromPlaylist(tracksIds)
+    }
+
+    override suspend fun sharePlaylist(playlistId: Int) {
+        repository.sharePlaylist(playlistId)
+    }
+
+    override suspend fun removePlaylist(playlistId: Int?) {
+        repository.removePlaylist(playlistId)
+    }
+
+    override suspend fun removeTrackFromPlaylist(track: Track, playlistId: Int) {
+        repository.removeTrackFromPlaylist(track, playlistId)
+    }
 }

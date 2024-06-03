@@ -7,9 +7,18 @@ import com.example.playlistmarket.databinding.ItemPlaylistBinding
 import com.example.playlistmarket.domain.media_library.models.Playlist
 import com.example.playlistmarket.utils.formatTextByNumbers
 
-class PlaylistsViewHolder(private val binding: ItemPlaylistBinding): RecyclerView.ViewHolder(binding.root) {
+class PlaylistsViewHolder(
+    private val binding: ItemPlaylistBinding,
+    onItemClick: (position: Int) -> Unit
+) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind (playlist: Playlist){
+    init {
+        itemView.setOnClickListener {
+            onItemClick(adapterPosition)
+        }
+    }
+
+    fun bind(playlist: Playlist) {
         binding.playlistTitle.text = playlist.title
         binding.tracksCount.text = formatTextByNumbers(playlist.tracksCount)
 
