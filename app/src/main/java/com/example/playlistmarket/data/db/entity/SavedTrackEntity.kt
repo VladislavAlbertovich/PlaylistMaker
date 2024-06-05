@@ -11,13 +11,13 @@ import java.util.Date
 data class SavedTrackEntity(
     @PrimaryKey @ColumnInfo(name = "track_id")
     val trackId: Int,
-    val previewUrl: String,
+    val previewUrl: String?,
     val trackName: String,
     val artistName: String,
     val trackTimeMillis: Long,
     val artworkUrl100: String,
     val collectionName: String,
-    val releaseDate: Date,
+    val releaseDate: Date?,
     val primaryGenreName: String,
     val country: String,
     var timeOfAddingOfToFavorites: Long = 0

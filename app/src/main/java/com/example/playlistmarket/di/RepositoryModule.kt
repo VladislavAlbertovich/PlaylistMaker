@@ -33,5 +33,5 @@ val repositoryModule = module {
     //Player
     single<MediaPlayerRepository> { MediaPlayerRepositoryImpl(get()) }
     single<MediaLibraryRepository> { MediaLibraryRepositoryImpl(get(), get()) }
-    single<PlaylistRepository> { PlaylistRepositoryImpl(get(), get(), get()) }
+    single<PlaylistRepository> { PlaylistRepositoryImpl(get(), get(), get(), get(), context = androidContext()) }
 }

@@ -19,18 +19,19 @@ class MediaLibraryDatabaseConverter {
         trackEntity.country
     )
 
-    fun map(track: Track) = TrackEntity(
-        track.trackId,
-        track.previewUrl,
-        track.trackName,
-        track.artistName,
-        track.trackTimeMillis, track.artworkUrl100,
-        track.collectionName,
-        track.releaseDate,
-        track.primaryGenreName,
-        track.country,
-        System.currentTimeMillis()
-    )
+    fun map(track: Track) =
+        TrackEntity(
+            track.trackId,
+            track.previewUrl!!,
+            track.trackName,
+            track.artistName,
+            track.trackTimeMillis, track.artworkUrl100,
+            track.collectionName,
+            track.releaseDate!!,
+            track.primaryGenreName,
+            track.country,
+            System.currentTimeMillis()
+        )
 
     fun map(playlist: Playlist): PlaylistEntity {
         return PlaylistEntity(
@@ -65,7 +66,7 @@ class MediaLibraryDatabaseConverter {
             releaseDate = track.releaseDate,
             primaryGenreName = track.primaryGenreName,
             country = track.country,
-            previewUrl = track.previewUrl,
+            previewUrl = track.previewUrl!!,
             timeOfAddingOfToFavorites = System.currentTimeMillis()
         )
     }
