@@ -166,12 +166,12 @@ class PlaylistRepositoryImpl(
                 formatTextByNumbers(trackList.size)
 
         trackList.forEach {
-            text += "\n[${index}].[${it.artistName}] - [${it.trackName}] [${
+            text += "\n${index}.${it.artistName} - ${it.trackName} (${
                 SimpleDateFormat(
                     "mm:ss",
                     Locale.getDefault()
                 ).format(it.trackTimeMillis)
-            }]"
+            })"
             index++
         }
         return text
