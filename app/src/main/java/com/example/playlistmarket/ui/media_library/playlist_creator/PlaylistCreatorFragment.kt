@@ -1,11 +1,9 @@
 package com.example.playlistmarket.ui.media_library.playlist_creator
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -17,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -26,10 +25,7 @@ import com.example.playlistmarket.domain.media_library.models.Playlist
 import com.example.playlistmarket.ui.BindingFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
 
-@Suppress("UNREACHABLE_CODE")
 class PlaylistCreatorFragment : BindingFragment<FragmentPlaylistCreatorBinding>() {
 
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
@@ -45,13 +41,6 @@ class PlaylistCreatorFragment : BindingFragment<FragmentPlaylistCreatorBinding>(
         container: ViewGroup?
     ): FragmentPlaylistCreatorBinding {
         return FragmentPlaylistCreatorBinding.inflate(inflater)
-    }
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,11 +63,8 @@ class PlaylistCreatorFragment : BindingFragment<FragmentPlaylistCreatorBinding>(
             }
         })
 
-
         val simpleTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             @SuppressLint("UseCompatLoadingForDrawables")
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -86,7 +72,6 @@ class PlaylistCreatorFragment : BindingFragment<FragmentPlaylistCreatorBinding>(
                     binding.createPlaylistButton.apply {
                         background =
                             resources.getDrawable(R.drawable.rectangle_blue, resources.newTheme())
-
                     }
                 } else {
                     binding.createPlaylistButton.apply {
@@ -102,25 +87,20 @@ class PlaylistCreatorFragment : BindingFragment<FragmentPlaylistCreatorBinding>(
             }
         }
 
-
         binding.playlistTitleEditText.let {
             it.requestFocus()
             it.addTextChangedListener(simpleTextWatcher)
         }
 
         binding.playlistDescriptionEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
                 playlistDescription = p0.toString()
             }
         })
-
-
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -132,48 +112,49 @@ class PlaylistCreatorFragment : BindingFragment<FragmentPlaylistCreatorBinding>(
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
+
         binding.coverPlace.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         binding.createPlaylistButton.setOnClickListener {
-            coverImageUri?.let { saveImageToPrivateStorage(it) }
-            viewModel.createPlaylist(playlistTitle, playlistDescription, coverImageUri)
+            coverImageUri?.let {
+                viewModel.saveImageToPrivateStorage(it.toString(), playlistTitle)
+            }
+            viewModel.createPlaylist(playlistTitle, playlistDescription, coverImageUri.toString())
             findNavController().navigateUp()
-            Toast.makeText(requireContext(), "Плейлист $playlistTitle создан", Toast.LENGTH_LONG)
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.the_playlist_has_been_created, playlistTitle), Toast.LENGTH_LONG
+            )
                 .show()
         }
     }
 
-    private fun saveImageToPrivateStorage(uri: Uri) {
-        val filePath = File(
-            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            "PlaylistMaker"
-        )
-        if (!filePath.exists()) filePath.mkdirs()
-        val file = File(filePath, playlistTitle)
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(file)
-
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-    }
-
     private fun checkDialog() {
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNeutralButton("Отмена") { _, _ -> }
-            .setPositiveButton("Завершить") { _, _ ->
+            .setTitle(getString(R.string.finish_creating_playlist))
+            .setMessage(getString(R.string.All_unsaved_data_will_be_lost))
+            .setNeutralButton(getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(getString(R.string.finish)) { _, _ ->
                 findNavController().navigateUp()
             }
         if (coverImageUri != null || playlistTitle.isNotEmpty() || playlistDescription.isNotEmpty()) {
-            confirmDialog.show()
+            val dialog = confirmDialog.show()
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.text_day_night_color
+                )
+            )
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.text_day_night_color
+                )
+            )
         } else findNavController().navigateUp()
     }
-
-
 
     private fun updateUI(playlist: Playlist) {
         binding.header.text = getString(R.string.edit)
@@ -183,7 +164,6 @@ class PlaylistCreatorFragment : BindingFragment<FragmentPlaylistCreatorBinding>(
 
         if (playlist.cover != null) {
             coverImageUri = playlist.cover.toUri()
-
             Glide
                 .with(requireContext())
                 .load(playlist.cover)
@@ -192,9 +172,19 @@ class PlaylistCreatorFragment : BindingFragment<FragmentPlaylistCreatorBinding>(
                 .into(binding.coverPlace)
         }
         binding.createPlaylistButton.setOnClickListener {
-            coverImageUri?.let { saveImageToPrivateStorage(it) }
-            viewModel.updatePlaylist(id = playlistId!!, name = playlistTitle, description = playlistDescription, cover = coverImageUri)
-            Toast.makeText(requireContext(), "Плейлист [ $playlistTitle ] сохранён", Toast.LENGTH_SHORT).show()
+            coverImageUri?.let {
+                viewModel.saveImageToPrivateStorage(it.toString(), playlistTitle)
+            }
+            viewModel.updatePlaylist(
+                id = playlistId!!,
+                name = playlistTitle,
+                description = playlistDescription,
+                cover = coverImageUri.toString()
+            )
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.playlist_saved, playlistTitle), Toast.LENGTH_SHORT
+            ).show()
             findNavController().navigateUp()
         }
     }

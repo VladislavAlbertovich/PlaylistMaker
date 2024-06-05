@@ -1,6 +1,5 @@
 package com.example.playlistmarket.ui.media_library.playlist_creator
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,7 @@ class PlaylistCreatorViewModel(private val playlistsInteractor: PlaylistsInterac
 
     private val currentPlaylist = MutableLiveData<Playlist>()
     fun observeCurrentPlaylist(): LiveData<Playlist> = currentPlaylist
-    fun createPlaylist(name: String, description: String, cover: Uri?) {
+    fun createPlaylist(name: String, description: String, cover: String?) {
         viewModelScope.launch { playlistsInteractor.createPlaylist(name, description, cover) }
     }
 
@@ -27,12 +26,14 @@ class PlaylistCreatorViewModel(private val playlistsInteractor: PlaylistsInterac
             }
         }
     }
-    fun updatePlaylist(id: Int, name: String, description: String, cover: Uri?) {
+    fun updatePlaylist(id: Int, name: String, description: String, cover: String?) {
         viewModelScope.launch {
             playlistsInteractor.editPlaylist(id, name, description, cover)
         }
     }
 
-
+    fun saveImageToPrivateStorage(uri: String, playlistTitle: String){
+        playlistsInteractor.saveImageToPrivateStorage(uri, playlistTitle)
+    }
 }
 

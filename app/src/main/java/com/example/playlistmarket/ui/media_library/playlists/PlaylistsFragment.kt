@@ -27,12 +27,6 @@ class PlaylistsFragment : BindingFragment<FragmentPlaylistsBinding>() {
         return FragmentPlaylistsBinding.inflate(inflater, container, false)
     }
 
-    companion object {
-        fun newInstance(): PlaylistsFragment {
-            return PlaylistsFragment()
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = PlaylistsAdapter { playlist -> onPlaylistClick(playlist) }
@@ -74,6 +68,15 @@ class PlaylistsFragment : BindingFragment<FragmentPlaylistsBinding>() {
 
     private fun onPlaylistClick(playlist: Playlist) {
         val arguments = PlaylistFragment.createBundle(playlist.id)
-        findNavController().navigate(R.id.action_mediaLibraryFragment_to_playlistFragment, arguments)
+        findNavController().navigate(
+            R.id.action_mediaLibraryFragment_to_playlistFragment,
+            arguments
+        )
+    }
+
+    companion object {
+        fun newInstance(): PlaylistsFragment {
+            return PlaylistsFragment()
+        }
     }
 }

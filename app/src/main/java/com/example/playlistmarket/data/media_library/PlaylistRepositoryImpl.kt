@@ -2,7 +2,10 @@ package com.example.playlistmarket.data.media_library
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Environment
 import androidx.core.content.ContextCompat.startActivity
 import com.example.playlistmarket.R
 import com.example.playlistmarket.data.converters.MediaLibraryDatabaseConverter
@@ -18,6 +21,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -28,11 +33,11 @@ class PlaylistRepositoryImpl(
     private val resourceProvider: ResourceProviderRepository,
     private val context: Context
 ) : PlaylistRepository {
-    override suspend fun createPlaylist(name: String, description: String, cover: Uri?) {
+    override suspend fun createPlaylist(name: String, description: String, cover: String?) {
         val playlistEntity = PlaylistEntity(
             title = name,
             description = description,
-            cover = cover.toString(),
+            cover = cover,
             tracksIds = gson.toJson(emptyList<Int>()),
             countOfTracks = 0
         )
@@ -124,19 +129,34 @@ class PlaylistRepositoryImpl(
         startActivity(context, chooser, null)
     }
 
-    override suspend fun editPlaylist(id: Int, title: String, description: String, cover: Uri?) {
+    override suspend fun editPlaylist(id: Int, title: String, description: String, cover: String?) {
         val playlistEntity = mediaLibraryDatabase.playlistDao().getItem(id)
         val playlist = converter.map(playlistEntity)
         val updatedPlaylist = playlist.copy(
             title = title,
             description = description,
-            cover = cover.toString()
+            cover = cover
         )
         mediaLibraryDatabase.playlistDao().updateItem(converter.map(updatedPlaylist))
     }
 
     override suspend fun removePlaylist(playlistId: Int?) {
-        mediaLibraryDatabase.playlistDao().deletePlaylist(playlistId!!)
+        val playlist = mediaLibraryDatabase.playlistDao().getItem(playlistId!!)
+        val tracksIdsFromPlaylistString = playlist.tracksIds
+        val tracksIdsFromPlaylist: List<Int> = createIdListFromJson(tracksIdsFromPlaylistString)
+        val tracksEnitiesFromSavedTracks = mediaLibraryDatabase.savedTrackDao().getAllItems()
+        val tracksFromSavedTracks = tracksEnitiesFromSavedTracks.map {
+            converter.map(it)
+        }
+        tracksIdsFromPlaylist.forEach { trackIdFromPlaylist ->
+            tracksFromSavedTracks.forEach { trackFromSavedTracks ->
+                if (trackIdFromPlaylist == trackFromSavedTracks.trackId) {
+                    mediaLibraryDatabase.savedTrackDao()
+                        .removeItem(converter.mapToSavedTrackEntity(trackFromSavedTracks))
+                }
+            }
+        }
+        mediaLibraryDatabase.playlistDao().deletePlaylist(playlistId)
     }
 
     private fun createSharedText(playlistEntity: PlaylistEntity, trackList: List<Track>): String {
@@ -146,12 +166,12 @@ class PlaylistRepositoryImpl(
                 formatTextByNumbers(trackList.size)
 
         trackList.forEach {
-            text += "\n${index}.${it.artistName} - ${it.trackName} ${
+            text += "\n[${index}].[${it.artistName}] - [${it.trackName}] [${
                 SimpleDateFormat(
                     "mm:ss",
                     Locale.getDefault()
                 ).format(it.trackTimeMillis)
-            }"
+            }]"
             index++
         }
         return text
@@ -168,5 +188,20 @@ class PlaylistRepositoryImpl(
     private fun createIdListFromJson(json: String): ArrayList<Int> {
         val listType = object : TypeToken<ArrayList<Int>>() {}.type
         return gson.fromJson(json, listType)
+    }
+
+    override fun saveImageToPrivateStorage(uri: String, playlistTitle: String) {
+        val filePath = File(
+            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+            "PlaylistMaker"
+        )
+        if (!filePath.exists()) filePath.mkdirs()
+        val file = File(filePath, playlistTitle)
+        val inputStream = context.contentResolver.openInputStream(Uri.parse(uri))
+        val outputStream = FileOutputStream(file)
+
+        BitmapFactory
+            .decodeStream(inputStream)
+            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
     }
 }

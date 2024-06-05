@@ -1,11 +1,14 @@
 package com.example.playlistmarket.ui.playlist
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -115,6 +118,10 @@ class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
             )
         }
         binding.delete.setOnClickListener { removePlaylistDialog() }
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            findNavController().navigateUp()
+        }
     }
 
     private fun removeTrackDialog(track: Track) {
@@ -125,7 +132,9 @@ class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 playlistViewModel.removeTrackFromPlaylist(track, playlistId)
             }
-        confirmDialog.show()
+        val dialog = confirmDialog.show()
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_day_night_color))
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_day_night_color))
     }
 
     private fun bindPlaylist(playlist: Playlist) {
@@ -170,7 +179,10 @@ class PlaylistFragment : BindingFragment<FragmentPlaylistBinding>() {
                 playlistViewModel.removePlaylistFromLibrary(playlistId)
                 findNavController().navigateUp()
             }
-        confirmDialog.show()
+        val dialog = confirmDialog.show()
+        dialog.window
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_day_night_color))
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_day_night_color))
     }
 
     override fun onResume() {

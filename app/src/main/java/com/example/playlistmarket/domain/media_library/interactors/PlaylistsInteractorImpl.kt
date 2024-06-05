@@ -1,17 +1,16 @@
 package com.example.playlistmarket.domain.media_library.interactors
 
-import android.net.Uri
 import com.example.playlistmarket.domain.media_library.PlaylistRepository
 import com.example.playlistmarket.domain.media_library.models.Playlist
 import com.example.playlistmarket.domain.search.models.Track
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistsInteractorImpl(private val repository: PlaylistRepository) : PlaylistsInteractor {
-    override suspend fun createPlaylist(name: String, description: String, cover: Uri?) {
+    override suspend fun createPlaylist(name: String, description: String, cover: String?) {
         repository.createPlaylist(name, description, cover)
     }
 
-    override suspend fun editPlaylist(id: Int, title: String, description: String, cover: Uri?) {
+    override suspend fun editPlaylist(id: Int, title: String, description: String, cover: String?) {
         repository.editPlaylist(id, title, description, cover)
     }
 
@@ -48,5 +47,9 @@ class PlaylistsInteractorImpl(private val repository: PlaylistRepository) : Play
 
     override suspend fun removeTrackFromPlaylist(track: Track, playlistId: Int) {
         repository.removeTrackFromPlaylist(track, playlistId)
+    }
+
+    override fun saveImageToPrivateStorage(uri: String, playlistTitle: String){
+        repository.saveImageToPrivateStorage(uri, playlistTitle)
     }
 }

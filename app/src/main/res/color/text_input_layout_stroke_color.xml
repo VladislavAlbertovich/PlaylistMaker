@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:color="@color/yp_blue" android:state_focused="true" />
-    <item android:alpha = "0.12" android:color="@color/white" android:state_hovered="true" />
-    <item android:alpha = "0.38" android:color="@color/yp_blue" android:state_enabled="false" />
-    <item android:color="@color/yp_blue" />
+    <item android:color="@color/yp_text_gray" android:state_focused="false" />
+    <item android:color="@color/yp_text_gray" />
 </selector>
