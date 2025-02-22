@@ -1,19 +1,23 @@
 package com.example.playlistmarket.ui.media_library.playlists
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmarket.databinding.ItemPlaylistBinding
 import com.example.playlistmarket.domain.media_library.models.Playlist
 
-class PlaylistsAdapter : RecyclerView.Adapter<PlaylistsViewHolder>() {
+class PlaylistsAdapter(private val onItemClick: (playlist: Playlist) -> Unit) :
+    RecyclerView.Adapter<PlaylistsViewHolder>() {
 
     private var playlistsList: List<Playlist> = emptyList()
 
-    fun updatePlaylistsList(playlistsList: List<Playlist>){
+    @SuppressLint("NotifyDataSetChanged")
+    fun updatePlaylistsList(playlistsList: List<Playlist>) {
         this.playlistsList = playlistsList
         notifyDataSetChanged()
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistsViewHolder {
         return PlaylistsViewHolder(
             ItemPlaylistBinding.inflate(
@@ -21,7 +25,13 @@ class PlaylistsAdapter : RecyclerView.Adapter<PlaylistsViewHolder>() {
                 parent,
                 false
             )
-        )
+        ){ position: Int ->
+            if (position!= RecyclerView.NO_POSITION){
+                playlistsList.getOrNull(position)?.let{ playlist ->
+                    onItemClick(playlist)
+                }
+            }
+        }
     }
 
     override fun getItemCount() = playlistsList.size

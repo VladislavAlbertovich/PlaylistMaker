@@ -27,6 +27,7 @@
 
         <TextView
             style="@style/TitleStyle"
+            android:id="@+id/header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_20dp"
@@ -84,7 +85,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:boxBackgroundMode="outline"
         app:boxStrokeColor="@color/text_input_layout_stroke_color"
-        app:boxStrokeWidth="@dimen/_2dp"
         android:hint="@string/title"
         app:hintTextColor="@color/yp_blue">
 
@@ -116,17 +116,18 @@
         app:boxBackgroundMode="outline"
         app:boxStrokeColor="@color/text_input_layout_stroke_color"
         android:hint="@string/description"
-        app:hintTextColor="@color/yp_blue">
+        app:hintTextColor="@color/text_input_layout_stroke_color">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/playlist_description_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:textColorHint="@color/text_day_night_color"
+            android:textColor="@color/text_day_night_color"
             app:hintAnimationEnabled="true"
             android:ellipsize="end"
-            android:maxLines="1" />
+            android:maxLines="1"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 

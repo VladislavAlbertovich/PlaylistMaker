@@ -3,6 +3,7 @@ package com.example.playlistmarket.di
 import com.example.playlistmarket.presentation.media_library.FavoriteTracksViewModel
 import com.example.playlistmarket.presentation.media_library.PlaylistsViewModel
 import com.example.playlistmarket.presentation.player.PlayerViewModel
+import com.example.playlistmarket.presentation.playlist.PlaylistViewModel
 import com.example.playlistmarket.presentation.search.SearchViewModel
 import com.example.playlistmarket.presentation.settings.SettingsViewModel
 import com.example.playlistmarket.ui.media_library.playlist_creator.PlaylistCreatorViewModel
@@ -27,5 +28,8 @@ val viewModelModule = module {
     }
     viewModel{
         PlaylistCreatorViewModel(get())
+    }
+    viewModel{
+        PlaylistViewModel(get(), get())
     }
 }

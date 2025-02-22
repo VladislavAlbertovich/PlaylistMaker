@@ -12,3 +12,16 @@ fun formatTextByNumbers(number: Int): String {
         else -> "$number треков"
     }
 }
+
+fun formatTextByMinutes(minutesCount: Int): String {
+    val preLastDigit = minutesCount % 100 / 10
+    if (preLastDigit == 1) return "$minutesCount минут"
+
+    return when (minutesCount % 10) {
+        1 -> "$minutesCount минута"
+        2 -> "$minutesCount минуты"
+        3 -> "$minutesCount минуты"
+        4 -> "$minutesCount минуты"
+        else -> "$minutesCount минут"
+    }
+}

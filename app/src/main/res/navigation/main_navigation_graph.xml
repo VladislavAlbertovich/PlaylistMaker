@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_mediaLibraryFragment_to_playlistCreatorFragment"
             app:destination="@id/playlistCreatorFragment" />
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_playlistFragment"
+            app:destination="@id/playlistFragment" />
     </fragment>
 
     <fragment
@@ -46,4 +49,15 @@
         android:id="@+id/playlistCreatorFragment"
         android:name="com.example.playlistmarket.ui.media_library.playlist_creator.PlaylistCreatorFragment"
         android:label="PlaylistCreatorFragment" />
+    <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.example.playlistmarket.ui.playlist.PlaylistFragment"
+        android:label="PlaylistFragment" >
+        <action
+            android:id="@+id/action_playlistFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+        <action
+            android:id="@+id/action_playlistFragment_to_playlistCreatorFragment"
+            app:destination="@id/playlistCreatorFragment" />
+    </fragment>
 </navigation>

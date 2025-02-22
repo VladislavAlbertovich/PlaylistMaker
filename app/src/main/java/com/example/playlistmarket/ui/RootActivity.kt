@@ -31,6 +31,16 @@ class RootActivity : AppCompatActivity() {
                     bottomNavigationView.visibility = View.GONE
                 }
 
+                R.id.playlistCreatorFragment -> {
+                    binding.screenSplitter.visibility = View.GONE
+                    bottomNavigationView.visibility = View.GONE
+                }
+
+                R.id.playlistFragment -> {
+                    binding.screenSplitter.visibility = View.GONE
+                    bottomNavigationView.visibility = View.GONE
+                }
+
                 else -> {
                     binding.screenSplitter.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
